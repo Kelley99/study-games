@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>论述题特训 - 历史大闯关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);min-height:100vh;color:#333;padding-bottom:30px}
+.container{max-width:800px;margin:0 auto;padding:15px}
+.header{text-align:center;color:#fff;margin-bottom:15px}
+.header h1{font-size:24px;margin-bottom:5px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+.header p{font-size:14px;opacity:0.9}
+.back-btn{position:absolute;top:15px;left:15px;background:rgba(255,255,255,0.2);color:#fff;border:none;padding:8px 15px;border-radius:20px;cursor:pointer;font-size:14px}
+.back-btn:hover{background:rgba(255,255,255,0.3)}
+.screen{display:none;background:rgba(255,255,255,0.98);border-radius:15px;padding:20px;margin-top:10px;box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+.screen.active{display:block}
+.menu-grid{display:grid;gap:12px;margin-top:15px}
+.menu-card{background:#f8f9fa;border-radius:12px;padding:18px;cursor:pointer;transition:all 0.2s;border:2px solid transparent;position:relative}
+.menu-card:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,0,0,0.1)}
+.menu-card.locked{opacity:0.6;cursor:not-allowed}
+.menu-card.locked::after{content:'🔒';position:absolute;top:10px;right:10px;font-size:20px}
+.menu-card.done{border-color:#28a745;background:#f0fff4}
+.menu-card .card-title{font-size:17px;font-weight:bold;color:#333;margin-bottom:8px}
+.menu-card .card-desc{font-size:13px;color:#666;line-height:1.4}
+.menu-card .card-stars{margin-top:10px;font-size:16px}
+.progress-bar{height:6px;background:#e9ecef;border-radius:3px;overflow:hidden;margin:15px 0}
+.progress-fill{height:100%;background:#e74c3c;transition:width 0.3s}
+.material-box{background:#fff3cd;border:1px solid #ffeaa7;border-radius:10px;padding:15px;margin:15px 0;font-size:14px;line-height:1.7;color:#856404}
+.question-text{font-size:17px;font-weight:bold;color:#333;margin:20px 0 15px;line-height:1.6}
+.options{display:grid;gap:10px}
+.option{background:#f8f9fa;border:2px solid #e9ecef;border-radius:10px;padding:12px 15px;cursor:pointer;transition:all 0.2s;font-size:14px;line-height:1.5}
+.option:hover{border-color:#e74c3c;background:#fef5f5}
+.option.selected{border-color:#e74c3c;background:#fdeaea}
+.option.correct{border-color:#28a745;background:#d4edda}
+.option.wrong{border-color:#dc3545;background:#f8d7da}
+.option.disabled{pointer-events:none;opacity:0.7}
+.hint-box{background:#e7f3ff;border:1px solid #b3d7ff;border-radius:10px;padding:15px;margin-top:15px;font-size:13px;line-height:1.6;color:#004085;display:none}
+.hint-box.show{display:block}
+.btn{background:#e74c3c;color:#fff;border:none;padding:12px 25px;border-radius:25px;cursor:pointer;font-size:15px;transition:all 0.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(231,76,60,0.3)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-group{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.result-icon{font-size:60px;text-align:center;margin:20px 0}
+.result-title{font-size:22px;font-weight:bold;text-align:center;color:#333}
+.checkboxes{display:grid;gap:12px}
+.checkbox-item{display:flex;align-items:flex-start;gap:12px;background:#f8f9fa;border-radius:10px;padding:12px;cursor:pointer}
+.checkbox-item:hover{background:#e9ecef}
+.checkbox-item input{margin-top:3px;width:18px;height:18px}
+.checkbox-item label{cursor:pointer;font-size:14px;line-height:1.5}
+.fill-blank{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.blank-input{border:2px solid #ddd;border-radius:8px;padding:8px 12px;font-size:14px;flex:1;min-width:150px}
+.blank-input:focus{border-color:#e74c3c;outline:none}
+.textarea-box{width:100%;min-height:120px;border:2px solid #ddd;border-radius:10px;padding:12px;font-size:14px;line-height:1.6;resize:vertical}
+.textarea-box:focus{border-color:#e74c3c;outline:none}
+.word-count{text-align:right;font-size:12px;color:#999;margin-top:5px}
+.reference-box{background:#f0f8ff;border:1px solid #b3d7ff;border-radius:10px;padding:15px;margin-top:15px;display:none}
+.reference-box.show{display:block}
+.reference-title{font-weight:bold;color:#0066cc;margin-bottom:10px}
+.reference-text{font-size:14px;line-height:1.7;color:#333}
+.score-info{text-align:center;padding:20px;background:#f8f9fa;border-radius:10px;margin:15px 0}
+.score-num{font-size:48px;font-weight:bold;color:#e74c3c}
+.score-label{font-size:14px;color:#666;margin-top:5px}
+.difficulty-tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;margin-left:8px}
+.diff-easy{background:#d4edda;color:#155724}
+.diff-medium{background:#fff3cd;color:#856404}
+.diff-hard{background:#f8d7da;color:#721c24}
+</style>
+</head>
+<body>
+<div class="container">
+  <button class="back-btn" id="backBtn">← 返回主页</button>
+
+  <div class="header">
+    <h1>📝 论述题特训</h1>
+    <p>掌握答题技巧，轻松应对论述题</p>
+  </div>
+
+  <div id="menuScreen" class="screen active">
+    <div class="progress-bar"><div class="progress-fill" id="totalProgress" style="width:0%"></div></div>
+    <div style="text-align:center;font-size:13px;color:#666" id="progressText">训练进度：0/4关</div>
+
+    <div class="menu-grid" id="menuGrid">
+      <!-- 动态生成 -->
+    </div>
+  </div>
+
+  <div id="trainScreen" class="screen">
+    <h3 style="margin-bottom:10px" id="trainTitle">第1关：观点提炼</h3>
+    <div class="progress-bar"><div class="progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div style="text-align:center;font-size:13px;color:#666" id="qNum">题目 1/5</div>
+
+    <div id="materialBox" class="material-box"></div>
+    <div id="questionBox" class="question-text"></div>
+    <div id="optionsBox" class="options"></div>
+
+    <div id="hintBox" class="hint-box"></div>
+    <div id="resultBox"></div>
+
+    <div class="btn-group">
+      <button class="btn" id="submitBtn">提交答案</button>
+      <button class="btn" id="nextBtn" style="display:none">下一题</button>
+      <button class="btn" id="viewRefBtn" style="display:none;background:#17a2b8">查看参考答案</button>
+    </div>
+
+    <div id="referenceBox" class="reference-box">
+      <div class="reference-title">📖 参考答案</div>
+      <div class="reference-text" id="referenceText"></div>
+    </div>
+  </div>
+
+  <div id="endScreen" class="screen">
+    <div class="result-icon" id="endIcon"></div>
+    <div class="result-title" id="endTitle"></div>
+    <div class="score-info">
+      <div class="score-num" id="scoreNum">0</div>
+      <div class="score-label">正确率</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn" id="retryBtn">再来一次</button>
+      <button class="btn" style="background:#6c757d" id="menuBtn">返回菜单</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== 数据 ==========
+var TRAININGS = [
+  {
+    title: "观点提炼",
+    questions: [
+      // === 简单题 ===
+      {
+        material: "商鞅变法规定：奖励耕织，生产粮食布帛多的人可免除徭役；奖励军功，立军功者可获得爵位和田宅。",
+        question: "从材料中提炼一个最佳观点：",
+        options: ["商鞅变法是否成功？","商鞅变法调动了农民和士兵的生产作战积极性","商鞅变法内容很丰富","我认为商鞅变法很重要"],
+        answer: 1,
+        hint: "观点必须是陈述句，不能是疑问句。选项A是疑问句，排除。选项C和D太宽泛。选项B准确提炼了奖励耕织和奖励军功的作用。",
+        reason: "最佳观点应：①是陈述句②结合材料关键词③有具体含义",
+        difficulty: "easy"
+      },
+      {
+        material: "秦始皇统一度量衡、货币，使得全国有了统一的计量标准和货币制度。",
+        question: "最能反映材料主旨的观点是：",
+        options: ["秦始皇统一了度量衡和货币","统一度量衡、货币有利于经济交流和巩固统一","秦朝的统一措施很多","度量衡是什么？"],
+        answer: 1,
+        hint: "选项B揭示了统一措施的意义——促进经济交流和巩固统一，是最佳观点。",
+        reason: "观点应揭示历史措施的作用和意义",
+        difficulty: "easy"
+      },
+      {
+        material: "《史记》记载：商鞅'令民为什伍，而相牧司连坐。不告奸者腰斩，告奸者与斩敌首同赏'。",
+        question: "从这段材料可以提炼的最佳观点是：",
+        options: ["商鞅变法实行连坐法","商鞅变法的法律措施加强了国家对民众的控制","商鞅的法律很严厉","连坐法好不好？"],
+        answer: 1,
+        hint: "观点要透过现象看本质。连坐法的本质作用是加强控制，选项B最佳。",
+        reason: "观点要从措施上升到作用层面",
+        difficulty: "easy"
+      },
+      // === 中等题 ===
+      {
+        material: "春秋战国时期，铁制农具和牛耕的使用和推广，是当时农业生产力水平提高的重要标志。",
+        question: "哪个观点最能反映材料主旨？",
+        options: ["生产工具的革新推动了社会进步","铁制农具和牛耕作用很大","春秋战国时期农业发达","为什么铁器会取代石器？"],
+        answer: 0,
+        hint: "观点应上升到本质层面。选项A从生产力提高到社会进步，是最佳观点。",
+        reason: "好的观点要从现象上升到本质",
+        difficulty: "medium"
+      },
+      {
+        material: "都江堰建成后，成都平原成为沃野千里的'天府之国'，秦国因此更加强大，为统一六国奠定了物质基础。",
+        question: "下列观点哪个最准确？",
+        options: ["都江堰是秦国修建的水利工程","都江堰的修建有利于秦国的统一大业","都江堰如何发挥作用？","成都平原变成天府之国很好"],
+        answer: 1,
+        hint: "观点要体现因果关系和历史意义。选项B准确揭示了都江堰对秦国统一的作用。",
+        reason: "观点应体现历史事件的意义和影响",
+        difficulty: "medium"
+      },
+      {
+        material: "科举制创立后，'朝为田舍郎，暮登天子堂'成为可能，寒门子弟可以通过考试进入仕途。",
+        question: "最能概括材料主旨的观点是：",
+        options: ["科举制让农民可以当官","科举制打破了门阀士族对选官的垄断","科举制是很好的制度","考试可以改变命运吗？"],
+        answer: 1,
+        hint: "选项A太表面，选项B揭示了科举制的本质作用——打破垄断、促进社会流动。",
+        reason: "观点要揭示制度的本质作用",
+        difficulty: "medium"
+      },
+      {
+        material: "唐朝实行三省六部制，中书省负责决策，门下省负责审议，尚书省负责执行，三省长官都是宰相。",
+        question: "从制度设计角度提炼观点：",
+        options: ["唐朝有三个省","三省六部制通过分工制衡提高了决策效率","唐朝宰相权力很大","三省六部制好不好？"],
+        answer: 1,
+        hint: "三省分工体现了制衡思想，选项B准确概括了制度设计的核心特点。",
+        reason: "观点要抓住制度设计的核心特点",
+        difficulty: "medium"
+      },
+      // === 困难题 ===
+      {
+        material: "北宋时期，'冗官、冗兵、冗费'问题严重，王安石变法试图通过青苗法、募役法等措施解决财政危机，但最终失败。",
+        question: "从这段材料可以提炼的最深刻观点是：",
+        options: ["王安石变法失败了","北宋积贫积弱的根源在于制度性弊端","王安石的改革措施有问题","为什么北宋会有三冗问题？"],
+        answer: 1,
+        hint: "选项B从现象上升到制度层面，揭示了积贫积弱的深层原因，是最深刻的观点。",
+        reason: "深刻观点要从现象上升到制度、规律层面",
+        difficulty: "hard"
+      },
+      {
+        material: "元朝实行行省制度，行省'有钱粮、兵甲、屯种、漕运、军马重务，无不领之'，但重大事务须向中央请示。",
+        question: "对行省权力特点的准确概括是：",
+        options: ["行省权力很大","行省权力受中央节制，体现了中央集权","行省什么都能管","行省制度很完善"],
+        answer: 1,
+        hint: "选项B准确概括了行省权力的两面性——既有较大权力又受中央节制，体现了中央集权原则。",
+        reason: "准确观点要把握事物的两面性",
+        difficulty: "hard"
+      },
+      {
+        material: "明朝废除丞相，设内阁；清朝设军机处，'军国大计，罔不总揽'。从明到清，皇权不断强化。",
+        question: "最能反映这一历史趋势的观点是：",
+        options: ["明清都没有丞相","君主专制不断强化，达到顶峰","内阁和军机处权力很大","为什么丞相被废除？"],
+        answer: 1,
+        hint: "选项B准确概括了从明到清的政治演变趋势——君主专制不断强化直至顶峰。",
+        reason: "观点要把握历史发展的趋势和规律",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    title: "角度拆解",
+    questions: [
+      // === 简单题 ===
+      {
+        material: "观点：唐朝出现了盛世局面。",
+        question: "论证这一观点，应从以下哪些角度展开？（多选）",
+        options: [
+          {text:"政治：唐太宗虚心纳谏，完善三省六部制", correct:true},
+          {text:"经济：农业生产技术改进，手工业发达", correct:true},
+          {text:"文化：诗歌繁荣，书法绘画艺术发展", correct:true},
+          {text:"民族关系：实行开明的民族政策", correct:true},
+          {text:"军事：发动对外战争扩张领土", correct:false}
+        ],
+        hint: "论证盛世局面应从政治清明、经济发展、文化繁荣、民族和睦等角度展开。军事扩张不是盛世的核心体现。",
+        difficulty: "easy"
+      },
+      {
+        material: "观点：宋朝经济得到很大发展。",
+        question: "选择可以论证该观点的角度：",
+        options: [
+          {text:"农业：引进占城稻，推广水稻种植技术", correct:true},
+          {text:"手工业：瓷器、丝织品大量出口", correct:true},
+          {text:"商业：海外贸易发达，设立市舶司", correct:true},
+          {text:"科技：三大发明对世界影响深远", correct:true},
+          {text:"军事：军队人数大幅增加", correct:false}
+        ],
+        hint: "科技成就是经济发展的重要推动力。军事人员增加不能直接证明经济发展。",
+        difficulty: "easy"
+      },
+      {
+        material: "观点：元朝实现了大一统。",
+        question: "应从哪些角度论证？",
+        options: [
+          {text:"疆域：疆域超越汉唐，空前辽阔", correct:true},
+          {text:"行政：实行行省制度管理全国", correct:true},
+          {text:"民族：各民族交融，回族形成", correct:true},
+          {text:"边疆：设置宣政院管辖西藏", correct:true},
+          {text:"文化：废除科举制度", correct:false}
+        ],
+        hint: "元朝没有废除科举，反而恢复了科举。其他角度都能体现大一统。",
+        difficulty: "easy"
+      },
+      // === 中等题 ===
+      {
+        material: "观点：中国古代农民起义沉重打击了王朝统治，推动了历史进步。",
+        question: "论证时应考虑哪些角度？",
+        options: [
+          {text:"直接作用：沉重打击王朝统治，少数成功推翻王朝", correct:true},
+          {text:"间接作用：迫使统治者调整政策，轻徭薄赋", correct:true},
+          {text:"失败原因：大多失败或被利用，阶级局限性", correct:true},
+          {text:"历史影响：推动生产力发展，促进社会变革", correct:true},
+          {text:"人物评价：领袖个人能力决定起义成败", correct:false}
+        ],
+        hint: "论证应全面客观：既要看到打击作用，也要看到大多数起义的失败命运和被利用的局限性，避免过度美化。",
+        difficulty: "medium"
+      },
+      {
+        material: "观点：制度创新是国家强盛的关键。",
+        question: "以下哪些角度可以论证？",
+        options: [
+          {text:"秦朝：郡县制取代分封制，加强中央集权", correct:true},
+          {text:"隋朝：科举制创立，打破门阀垄断", correct:true},
+          {text:"元朝：行省制度，影响至今", correct:true},
+          {text:"唐宋：三省六部制不断完善", correct:true},
+          {text:"每个朝代都完全创新制度", correct:false}
+        ],
+        hint: "'完全创新'表述绝对化，应有继承和发展。",
+        difficulty: "medium"
+      },
+      {
+        material: "观点：唐朝文化繁荣。",
+        question: "应从哪些角度论证？",
+        options: [
+          {text:"文学：诗歌创作达到高峰，李白杜甫为代表", correct:true},
+          {text:"书法：颜真卿、柳公权创立新风格", correct:true},
+          {text:"绘画：吴道子人物画成就突出", correct:true},
+          {text:"宗教：佛教中国化，禅宗兴起", correct:true},
+          {text:"军事：军队战斗力很强", correct:false}
+        ],
+        hint: "军事角度与文化繁荣无直接关系。",
+        difficulty: "medium"
+      },
+      {
+        material: "观点：宋代科技成就突出。",
+        question: "论证角度包括：",
+        options: [
+          {text:"印刷术：活字印刷术发明，促进文化传播", correct:true},
+          {text:"指南针：应用于航海，推动海外贸易", correct:true},
+          {text:"火药：武器改良，军事技术进步", correct:true},
+          {text:"传播：三大发明传到欧洲，影响深远", correct:true},
+          {text:"农业：水稻产量提高", correct:false}
+        ],
+        hint: "农业角度属于经济领域，与科技成就主题不够直接。",
+        difficulty: "medium"
+      },
+      // === 困难题 ===
+      {
+        material: "观点：中国古代选官制度不断进步。",
+        question: "论证时应考虑哪些层面？",
+        options: [
+          {text:"演变：世卿世禄→察举制→九品中正制→科举制", correct:true},
+          {text:"标准：血缘→品德→门第→考试成绩", correct:true},
+          {text:"作用：扩大统治基础，提高官员素质", correct:true},
+          {text:"趋势：选官权力从地方收归中央", correct:true},
+          {text:"局限：科举制完全公平", correct:false}
+        ],
+        hint: "'完全公平'表述绝对化，科举制也有局限性。",
+        difficulty: "hard"
+      },
+      {
+        material: "观点：中国古代经济重心南移。",
+        question: "论证需要哪些角度？",
+        options: [
+          {text:"原因：北方战乱，人口南迁", correct:true},
+          {text:"过程：从唐朝中后期到南宋完成", correct:true},
+          {text:"表现：南方农业、手工业、商业超过北方", correct:true},
+          {text:"影响：南方成为国家财政主要来源", correct:true},
+          {text:"结果：北方经济完全衰落", correct:false}
+        ],
+        hint: "'完全衰落'表述绝对化，北方经济仍有发展。",
+        difficulty: "hard"
+      },
+      {
+        material: "观点：丝绸之路促进了中外文明交流。",
+        question: "论证角度应包括：",
+        options: [
+          {text:"输出：丝绸、瓷器、茶叶、四大发明西传", correct:true},
+          {text:"输入：佛教、音乐、舞蹈、农产品传入", correct:true},
+          {text:"双向：物质、技术、文化交流", correct:true},
+          {text:"影响：促进东西方文明发展", correct:true},
+          {text:"局限：只对中国有利", correct:false}
+        ],
+        hint: "丝绸之路是双向交流，对东西方都有利。",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    title: "史论连线",
+    questions: [
+      // === 简单题 ===
+      {
+        material: "【史实】商鞅变法规定奖励耕战。\n【观点】商鞅变法增强了秦国的国力。",
+        question: "用'因为…所以…'将史实与观点连接，填写完整论证：",
+        type: "fill",
+        answer: "因为商鞅变法规定奖励耕战，调动了农民和士兵的积极性，所以商鞅变法增强了秦国的国力。",
+        hint: "史论连接要补全中间的逻辑链条——调动积极性是关键环节。",
+        reason: "史论结合要：史实→作用→结果",
+        difficulty: "easy"
+      },
+      {
+        material: "【史实】大运河沟通了南北交通。\n【观点】大运河促进了南北经济交流。",
+        question: "完成论证（补全逻辑链条）：",
+        type: "fill",
+        answer: "因为大运河沟通了南北交通，使南方的粮食、丝绸等物产可以运往北方，所以大运河促进了南北经济交流。",
+        hint: "要具体说明沟通交通如何导致经济交流——运输物产是关键环节。",
+        reason: "要补全从措施到结果的中间过程",
+        difficulty: "easy"
+      },
+      {
+        material: "【史实】唐朝实行开明的民族政策。\n【观点】唐朝民族关系和谐融洽。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为唐朝实行开明的民族政策，各族首领被尊为天可汗，唐蕃和亲促进了民族团结，所以唐朝民族关系和谐融洽。",
+        hint: "要举出具体事例——天可汗、唐蕃和亲来支撑论断。",
+        reason: "论证要举出具体史实支撑",
+        difficulty: "easy"
+      },
+      // === 中等题 ===
+      {
+        material: "【史实】科举制打破了门第限制。\n【观点】科举制促进了社会公平。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为科举制打破了门第限制，使出身寒门的子弟可以通过考试进入仕途，所以科举制促进了社会公平。",
+        hint: "关键环节是寒门子弟可通过考试入仕这一具体机制。",
+        reason: "论证要揭示制度的具体作用机制",
+        difficulty: "medium"
+      },
+      {
+        material: "【史实】宋代海外贸易发达。\n【观点】宋代商业繁荣。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为宋代海外贸易发达，设立市舶司管理海外贸易，瓷器、丝织品大量出口，海外贸易税收成为重要财政来源，所以宋代商业繁荣。",
+        hint: "要多个角度支撑——管理机构、出口商品、财政收入。",
+        reason: "论证可以从多个层面展开，形成证据链",
+        difficulty: "medium"
+      },
+      {
+        material: "【史实】元朝设置宣政院管辖西藏。\n【观点】西藏正式成为中央政府管辖的行政区域。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为元朝设置宣政院管辖西藏，中央政府对西藏行使有效管辖权，所以西藏正式成为中央政府管辖的行政区域。",
+        hint: "关键环节是中央行使有效管辖权。",
+        reason: "论证要揭示行政管辖的确立",
+        difficulty: "medium"
+      },
+      {
+        material: "【史实】明朝废除丞相制度。\n【观点】明朝君主专制强化。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为明朝废除丞相制度，皇帝直接统领六部，丞相权力不再对皇权构成制约，所以明朝君主专制强化。",
+        hint: "关键环节是丞相不再制约皇权。",
+        reason: "论证要揭示制度变化对权力结构的影响",
+        difficulty: "medium"
+      },
+      // === 困难题 ===
+      {
+        material: "【史实】北宋'冗官、冗兵、冗费'问题严重。\n【观点】北宋出现积贫积弱局面。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为北宋'冗官、冗兵、冗费'问题严重，官僚机构臃肿效率低下，军队数量庞大战斗力不强，财政负担沉重，所以北宋出现积贫积弱局面。",
+        hint: "要分别说明三冗如何导致积贫积弱。",
+        reason: "论证要揭示多个因素如何共同导致结果",
+        difficulty: "hard"
+      },
+      {
+        material: "【史实】清朝设军机处，'军国大计，罔不总揽'。\n【观点】清朝君主专制达到顶峰。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为清朝设军机处，军国大事完全由皇帝裁决，军机大臣只能跪受笔录，皇权不再受任何制约，所以清朝君主专制达到顶峰。",
+        hint: "关键环节是皇权不受制约、军机大臣无决策权。",
+        reason: "论证要揭示专制程度达到顶峰的具体表现",
+        difficulty: "hard"
+      },
+      {
+        material: "【史实】四大发明传到欧洲。\n【观点】四大发明推动了欧洲社会转型。",
+        question: "完成论证：",
+        type: "fill",
+        answer: "因为四大发明传到欧洲，印刷术促进文化传播和文艺复兴，指南针推动新航路开辟，火药推动军事变革和封建制度瓦解，所以四大发明推动了欧洲社会转型。",
+        hint: "要分别说明三大发明各自的作用。",
+        reason: "论证要从多个维度展开，形成完整证据链",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    title: "完整论述",
+    questions: [
+      // === 简单题 ===
+      {
+        material: "阅读材料，回答问题。\n\n材料：商鞅变法规定，国家承认土地私有，允许自由买卖；奖励耕战，生产粮食布帛多的人可免除徭役。\n\n【要求】围绕商鞅变法的作用写一篇80-120字的小短文。要求观点明确、史论结合、逻辑清晰。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "商鞅变法增强了秦国的国力。\n\n商鞅变法奖励耕战，调动农民生产积极性，促进农业发展；奖励军功，提高军队战斗力。通过这些措施，秦国经济繁荣、军事强大。\n\n结论：商鞅变法是秦国强大的关键。",
+        wordLimit: [80, 120],
+        hint: "完整论述结构：观点→论证(政治、经济角度)→结论升华",
+        difficulty: "easy"
+      },
+      {
+        material: "阅读材料，回答问题。\n\n材料：元朝实行行省制度，在地方设置行中书省，简称行省或省。行省的权力很大，但受中央节制。\n\n【要求】围绕行省制度的作用写一篇短文。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "行省制度加强了中央集权。\n\n元朝通过行省制度对辽阔疆域进行有效管理，加强了中央对地方的控制。行省制度奠定了我国省级行政区划的基础，沿用至今。\n\n结论：行省制度是元朝巩固统一的重要制度创新。",
+        wordLimit: [80, 140],
+        hint: "论述要点：作用(加强中央集权、有效管辖)→影响(奠定行政区划基础)→历史意义",
+        difficulty: "easy"
+      },
+      // === 中等题 ===
+      {
+        material: "阅读材料，回答问题。\n\n材料一：唐朝时期，遣唐使、玄奘西行、鉴真东渡，中外交流频繁。\n材料二：造纸术经丝绸之路传到阿拉伯，再传入欧洲。\n\n【要求】围绕唐朝对外交流的特点和意义写一篇短文。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "唐朝对外交流呈现开放包容、双向交流的特点。\n\n遣唐使来华学习中国制度，推动了日本等国的封建化。玄奘西行、鉴真东渡促进了佛教交流和东亚文化圈形成。造纸术等发明传播到欧洲。\n\n结论：开放交流是国家繁荣的重要动力。",
+        wordLimit: [80, 150],
+        hint: "论述要点：特点(开放包容、双向交流)→意义(文明传播、文化发展)→启示升华",
+        difficulty: "medium"
+      },
+      {
+        material: "阅读材料，回答问题。\n\n材料：科举制创立后，'朝为田舍郎，暮登天子堂'成为可能。科举制延续了一千三百多年。\n\n【要求】围绕科举制的作用和影响写一篇短文。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "科举制促进了社会公平和人才选拔。\n\n科举制打破了门阀士族对选官的垄断，使寒门子弟可以通过考试进入仕途，扩大了统治基础。科举制提高了官员的文化素质，加强了中央集权。\n\n结论：科举制是中国古代选官制度的重大创新。",
+        wordLimit: [80, 150],
+        hint: "论述要点：作用(打破垄断、扩大基础)→影响(提高素质、加强集权)→历史地位",
+        difficulty: "medium"
+      },
+      {
+        material: "阅读材料，回答问题。\n\n材料：宋朝时期，海外贸易发达，政府设立市舶司管理海外贸易，泉州、广州成为重要港口。\n\n【要求】围绕宋代海外贸易的特点和作用写一篇短文。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "宋代海外贸易呈现规模大、管理规范的特点。\n\n政府设立市舶司专门管理海外贸易，泉州、广州等港口繁荣。海外贸易税收成为重要财政来源，瓷器、丝织品大量出口。\n\n结论：海外贸易推动了宋代经济繁荣。",
+        wordLimit: [80, 140],
+        hint: "论述要点：特点(规模大、管理规范)→表现(港口繁荣、税收增加)→作用",
+        difficulty: "medium"
+      },
+      // === 困难题 ===
+      {
+        material: "阅读材料，回答问题。\n\n材料一：北宋时期，'冗官、冗兵、冗费'问题严重，国家财政负担沉重。\n材料二：王安石变法试图通过青苗法、募役法等措施解决财政危机，但遭到反对，最终失败。\n\n【要求】分析北宋积贫积弱的原因及变法失败的原因。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "北宋积贫积弱的根源在于制度性弊端。\n\n冗官冗兵导致财政负担沉重，军队战斗力不强。王安石变法触动了大地主、大官僚的利益，遭到强烈反对，加上执行中出现偏差，最终失败。\n\n结论：改革需要兼顾各方利益，循序渐进。",
+        wordLimit: [100, 160],
+        hint: "论述要点：积贫积弱原因→变法失败原因→历史启示",
+        difficulty: "hard"
+      },
+      {
+        material: "阅读材料，回答问题。\n\n材料：中国古代政治制度经历了从分封制到郡县制、从三公九卿制到三省六部制、从丞相制到废除丞相设内阁军机处的演变。\n\n【要求】概括中国古代政治制度演变的趋势，并分析其影响。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "中国古代政治制度演变的趋势是君主专制不断强化、中央集权不断加强。\n\n从分封制到郡县制，中央对地方控制加强。从丞相制到废除丞相，皇权不再受制约。军机处的设立标志着君主专制达到顶峰。\n\n结论：君主专制的强化有利于统一多民族国家的巩固，但也阻碍了社会进步。",
+        wordLimit: [100, 180],
+        hint: "论述要点：演变趋势(专制强化、集权加强)→具体表现→双重影响",
+        difficulty: "hard"
+      },
+      {
+        material: "阅读材料，回答问题。\n\n材料一：春秋战国时期，铁器牛耕推广，井田制瓦解，封建土地私有制确立。\n材料二：各国纷纷变法，秦国商鞅变法最为彻底，最终统一六国。\n\n【要求】分析春秋战国时期社会变革的原因和影响。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "春秋战国时期社会变革的根本原因是生产力发展。\n\n铁器牛耕的推广提高了生产力，井田制瓦解，封建土地私有制确立。各国变法顺应了历史潮流，秦国变法最彻底，最终完成统一。\n\n结论：生产力发展推动社会制度变革，改革是强国之路。",
+        wordLimit: [100, 160],
+        hint: "论述要点：根本原因(生产力发展)→具体表现→历史规律",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    title: "完整论述（补充）",
+    questions: [
+      {
+        material: "阅读材料，回答问题。\n\n材料一：秦末陈胜吴广起义提出"王侯将相，宁有种乎"，建立了张楚政权，但最终失败。\n材料二：东汉黄巾起义提出"苍天已死，黄天当立"，动摇了东汉统治，但因力量分散最终被镇压。\n材料三：唐末黄巢起义转战南北，"冲天香阵透长安"，沉重打击了唐朝统治，但最终失败。\n\n【要求】根据材料，分析中国古代农民起义的作用和局限性。",
+        question: "请撰写完整论述：",
+        type: "essay",
+        answer: "中国古代农民起义沉重打击了王朝统治，但大多以失败告终。\n\n陈胜吴广起义提出"王侯将相，宁有种乎"，开创农民反抗先河，沉重打击秦朝统治。黄巾起义动摇了东汉统治基础。黄巢起义转战南北，沉重打击唐朝统治，加速其灭亡。然而，农民起义因缺乏先进理论指导、组织松散，往往被地主官僚利用或镇压，最终大多失败。\n\n结论：农民起义虽有局限性，但仍是推动历史进步的重要力量。",
+        wordLimit: [100, 160],
+        hint: "论述要点：列举起义的积极作用（沉重打击）→分析失败原因/局限性→得出客观评价",
+        difficulty: "hard"
+      }
+    ]
+  }
+];
+
+// ========== 状态 ==========
+var state = {
+  currentTrain: -1,
+  currentQ: 0,
+  score: 0,
+  answered: 0,
+  selections: [],
+  selectedIdx: -1
+};
+
+// ========== 进度 ==========
+function loadProgress() {
+  try {
+    var s = localStorage.getItem('essayTraining4');
+    if (s) {
+      var p = JSON.parse(s);
+      return p;
+    }
+  } catch(e) {}
+  return { unlocked: [true, false, false, false], stars: [0, 0, 0, 0] };
+}
+
+function saveProgress(p) {
+  localStorage.setItem('essayTraining4', JSON.stringify(p));
+}
+
+// ========== 渲染菜单 ==========
+function renderMenu() {
+  var p = loadProgress();
+  var done = p.stars.filter(function(s) { return s > 0; }).length;
+  document.getElementById('totalProgress').style.width = (done / 4 * 100) + '%';
+  document.getElementById('progressText').textContent = '训练进度：' + done + '/4关';
+
+  var grid = document.getElementById('menuGrid');
+  var titles = ['观点提炼', '角度拆解', '史论连线', '完整论述'];
+  var descs = [
+    '从材料中抓关键词，选出最佳观点陈述句',
+    '选择论证应从哪些层面展开',
+    '用"因为…所以…"连接史实与观点',
+    '写80-120字完整论述，对照参考答案'
+  ];
+
+  var html = '';
+  for (var i = 0; i < 4; i++) {
+    var cls = 'menu-card';
+    if (!p.unlocked[i]) cls += ' locked';
+    else if (p.stars[i] > 0) cls += ' done';
+    var stars = p.stars[i] > 0 ? '⭐'.repeat(p.stars[i]) : '';
+    html += '<div class="' + cls + '" data-idx="' + i + '">' +
+      '<div class="card-title">第' + (i+1) + '关：' + titles[i] + '</div>' +
+      '<div class="card-desc">' + descs[i] + '</div>' +
+      '<div class="card-stars">' + stars + '</div>' +
+      '</div>';
+  }
+  grid.innerHTML = html;
+
+  // 绑定点击
+  grid.querySelectorAll('.menu-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-idx'));
+      startTraining(idx);
+    });
+  });
+}
+
+// ========== 开始训练 ==========
+function startTraining(idx) {
+  var p = loadProgress();
+  if (!p.unlocked[idx]) return;
+
+  state.currentTrain = idx;
+  state.currentQ = 0;
+  state.score = 0;
+  state.answered = 0;
+  state.selections = [];
+  state.selectedIdx = -1;
+
+  showScreen('trainScreen');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+// ========== 渲染题目 ==========
+function renderQuestion() {
+  var train = TRAININGS[state.currentTrain];
+  var q = train.questions[state.currentQ];
+
+  document.getElementById('trainTitle').textContent = '第' + (state.currentTrain + 1) + '关：' + train.title;
+  document.getElementById('qProgress').style.width = (state.currentQ / train.questions.length * 100) + '%';
+  document.getElementById('qNum').textContent = '题目 ' + (state.currentQ + 1) + '/' + train.questions.length;
+
+  // 难度标签
+  var diffLabel = q.difficulty === 'easy' ? '简单' : q.difficulty === 'medium' ? '中等' : '困难';
+  var diffClass = q.difficulty === 'easy' ? 'diff-easy' : q.difficulty === 'medium' ? 'diff-medium' : 'diff-hard';
+
+  document.getElementById('materialBox').innerHTML = q.material.replace(/\n/g, '<br>') + '<br><span class="difficulty-tag ' + diffClass + '">' + diffLabel + '</span>';
+  document.getElementById('questionBox').textContent = q.question;
+  document.getElementById('hintBox').innerHTML = '<strong>💡 方法提示：</strong>' + q.hint;
+  document.getElementById('hintBox').classList.remove('show');
+  document.getElementById('resultBox').innerHTML = '';
+  document.getElementById('referenceBox').classList.remove('show');
+  document.getElementById('referenceText').textContent = q.answer || '';
+  document.getElementById('submitBtn').style.display = 'inline-block';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('viewRefBtn').style.display = (state.currentTrain >= 2) ? 'inline-block' : 'none';
+
+  var optionsHtml = '';
+  if (state.currentTrain === 0) {
+    // 单选
+    q.options.forEach(function(opt, i) {
+      optionsHtml += '<div class="option" data-idx="' + i + '">' + opt + '</div>';
+    });
+  } else if (state.currentTrain === 1) {
+    // 多选
+    optionsHtml = '<div class="checkboxes">';
+    q.options.forEach(function(opt, i) {
+      optionsHtml += '<label class="checkbox-item"><input type="checkbox" value="' + i + '">' + opt.text + '</label>';
+    });
+    optionsHtml += '</div>';
+  } else if (state.currentTrain === 2) {
+    // 填空
+    optionsHtml = '<textarea class="textarea-box" id="fillInput" placeholder="请填写完整论证..."></textarea>';
+  } else if (state.currentTrain === 3) {
+    // 论述
+    optionsHtml = '<textarea class="textarea-box" id="essayInput" placeholder="请撰写完整论述..."></textarea>' +
+      '<div class="word-count" id="wordCount">0字（建议' + q.wordLimit[0] + '-' + q.wordLimit[1] + '字）</div>';
+  }
+
+  document.getElementById('optionsBox').innerHTML = optionsHtml;
+
+  // 绑定事件
+  if (state.currentTrain === 0) {
+    document.querySelectorAll('.option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        doSelectOption(idx);
+      });
+    });
+  } else if (state.currentTrain === 1) {
+    document.querySelectorAll('.checkbox-item input').forEach(function(cb) {
+      cb.addEventListener('change', updateCheckboxSelections);
+    });
+  } else if (state.currentTrain === 3) {
+    var essayInput = document.getElementById('essayInput');
+    if (essayInput) {
+      essayInput.addEventListener('input', function() {
+        var count = this.value.replace(/\s/g, '').length;
+        document.getElementById('wordCount').textContent = count + '字';
+      });
+    }
+  }
+}
+
+// ========== 选择逻辑 ==========
+function doSelectOption(idx) {
+  state.selectedIdx = idx;
+  state.selections = [idx];
+  document.querySelectorAll('.option').forEach(function(o, i) {
+    o.classList.remove('selected');
+    if (i === idx) o.classList.add('selected');
+  });
+}
+
+function updateCheckboxSelections() {
+  state.selections = [];
+  document.querySelectorAll('.checkbox-item input:checked').forEach(function(cb) {
+    state.selections.push(parseInt(cb.value));
+  });
+}
+
+// ========== 提交答案 ==========
+function submitAnswer() {
+  var train = TRAININGS[state.currentTrain];
+  var q = train.questions[state.currentQ];
+  var correct = false;
+  var correctCount = 0;
+
+  if (state.currentTrain === 0) {
+    // 单选
+    if (state.selectedIdx >= 0) {
+      correct = (state.selectedIdx === q.answer);
+      document.querySelectorAll('.option').forEach(function(o, i) {
+        o.classList.add('disabled');
+        if (i === q.answer) o.classList.add('correct');
+        if (i === state.selectedIdx && !correct) o.classList.add('wrong');
+      });
+    }
+  } else if (state.currentTrain === 1) {
+    // 多选
+    var correctIndices = q.options.map(function(o, i) { return o.correct ? i : -1; }).filter(function(i) { return i >= 0; });
+    var selectedSet = new Set(state.selections);
+    var correctSet = new Set(correctIndices);
+
+    state.selections.forEach(function(sel) {
+      if (correctSet.has(sel)) correctCount++;
+    });
+
+    document.querySelectorAll('.checkbox-item').forEach(function(cb, i) {
+      if (q.options[i].correct) {
+        cb.style.border = '2px solid #28a745';
+        cb.style.background = '#d4edda';
+      }
+    });
+
+    correct = correctCount >= Math.floor(correctIndices.length * 0.7);
+  } else if (state.currentTrain === 2 || state.currentTrain === 3) {
+    document.getElementById('referenceBox').classList.add('show');
+    correct = true; // 让学生对照参考答案自评
+  }
+
+  if (correct) state.score++;
+  state.answered++;
+
+  document.getElementById('hintBox').classList.add('show');
+
+  if (state.currentTrain >= 2) {
+    document.getElementById('resultBox').innerHTML = '<div style="text-align:center;color:#28a745;font-weight:bold;margin-top:15px">✓ 请对照参考答案，检查要点是否完整</div>';
+  }
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+// ========== 下一题 ==========
+function nextQuestion() {
+  var train = TRAININGS[state.currentTrain];
+  state.currentQ++;
+  state.selectedIdx = -1;
+  state.selections = [];
+
+  if (state.currentQ < train.questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+// ========== 结果 ==========
+function showResult() {
+  var accuracy = state.answered > 0 ? state.score / state.answered : 0;
+  var stars = accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : accuracy >= 0.5 ? 1 : 0;
+
+  var p = loadProgress();
+  if (stars > p.stars[state.currentTrain]) {
+    p.stars[state.currentTrain] = stars;
+  }
+  if (stars >= 2 && state.currentTrain < 3) {
+    p.unlocked[state.currentTrain + 1] = true;
+  }
+  if (p.stars.filter(function(s) { return s >= 2; }).length >= 4) {
+    p.unlocked = [true, true, true, true];
+  }
+  saveProgress(p);
+
+  document.getElementById('endIcon').textContent = stars === 3 ? '🏆' : stars === 2 ? '🥈' : stars === 1 ? '🥉' : '💪';
+  document.getElementById('endTitle').textContent = stars === 3 ? '完美通关！' : stars === 2 ? '优秀通过！' : stars === 1 ? '及格！' : '继续努力！';
+  document.getElementById('scoreNum').textContent = Math.round(accuracy * 100) + '%';
+
+  showScreen('endScreen');
+}
+
+// ========== 按钮事件 ==========
+document.getElementById('backBtn').addEventListener('click', function() {
+  var base = window.location.href.replace('/essay-training.html', '').replace('/' + window.location.pathname.split('/').pop(), '');
+  window.location.href = base + '/index.html';
+});
+
+document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+document.getElementById('viewRefBtn').addEventListener('click', function() {
+  document.getElementById('referenceBox').classList.toggle('show');
+});
+document.getElementById('retryBtn').addEventListener('click', function() {
+  state.currentQ = 0;
+  state.score = 0;
+  state.answered = 0;
+  state.selectedIdx = -1;
+  state.selections = [];
+  showScreen('trainScreen');
+  renderQuestion();
+});
+document.getElementById('menuBtn').addEventListener('click', function() {
+  renderMenu();
+  showScreen('menuScreen');
+});
+
+// ========== 初始化 ==========
+renderMenu();
+</script>
+</body>
+</html>
