@@ -99,6 +99,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 .back-btn:hover{background:#5a6268}
 .retry-wrong-btn{display:inline-block;padding:10px 24px;background:#ff6b6b;color:#fff;border-radius:25px;cursor:pointer;font-size:14px;font-weight:bold;margin:10px}
 .retry-wrong-btn:hover{background:#e55555}
+.essay-stage{background:linear-gradient(135deg,#fff5f5 0%,#ffe5e5 100%);border:2px solid #e74c3c}
+.essay-stage:hover{border-color:#c0392b;box-shadow:0 5px 20px rgba(231,76,60,0.2)}
+.stage-name.essay-title{color:#e74c3c}
 </style>
 </head>
 <body>
@@ -226,8 +229,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 </div>
 <script>
 // 题库数据 - 更新版（含第5课和第7课）
-var CHS = [{"id":"c1","name":"隋唐时期：繁荣与开放的时代","stages":[
-  {"name":"隋朝的统一与灭亡","qs":[
+// 论述题数据（从essay-training.html导入）
+var ESSAY_TRAINS = [{"title":"观点提炼","questions":[{"material":"商鞅变法规定：奖励耕织，生产粮食布帛多的人可免除徭役；奖励军功，立军功者可获得爵位和田宅。","question":"从材料中提炼一个最佳观点：","options":["商鞅变法是否成功？","商鞅变法调动了农民和士兵的生产作战积极性","商鞅变法内容很丰富","我认为商鞅变法很重要"],"answer":1,"hint":"观点必须是陈述句，不能是疑问句。选项A是疑问句，排除。选项C和D太宽泛。选项B准确提炼了奖励耕织和奖励军功的作用。","difficulty":"easy"},{"material":"秦始皇统一度量衡、货币，使得全国有了统一的计量标准和货币制度。","question":"最能反映材料主旨的观点是：","options":["秦始皇统一了度量衡和货币","统一度量衡、货币有利于经济交流和巩固统一","秦朝的统一措施很多","度量衡是什么？"],"answer":1,"hint":"选项B揭示了统一措施的意义——促进经济交流和巩固统一，是最佳观点。","difficulty":"easy"},{"material":"唐太宗曾说：'君，舟也；人，水也；水能载舟，亦能覆舟。'","question":"这段话体现了唐太宗的什么治国思想？","options":["以民为本","依法治国","重农抑商","对外开放"],"answer":0,"hint":"水能载舟亦能覆舟，形象地说明百姓的力量，体现了以民为本的思想。","difficulty":"easy"},{"material":"忆昔开元全盛日，小邑犹藏万家室。稻米流脂粟米白，公私仓廪俱丰实。——杜甫《忆昔》","question":"这首诗描述的是哪个时期的盛世景象？","options":["贞观之治","开元盛世","文景之治","康乾盛世"],"answer":1,"hint":"诗中'开元'指的是唐玄宗年号，描述的是开元盛世。","difficulty":"easy"},{"material":"玄奘西行取经，历时17年，行程5万里，带回了657部佛经。他还根据旅途见闻，撰写了《大唐西域记》。","question":"材料反映了玄奘西行的哪项重要贡献？","options":["传播了佛教文化","保存了中亚和印度半岛的历史地理资料","加强了中印军事同盟","推动了唐朝的领土扩张"],"answer":1,"hint":"《大唐西域记》是研究古代中亚和印度历史地理的重要文献。","difficulty":"easy"},{"material":"唐太宗被各族首领尊称为'天可汗'，体现了唐朝的民族政策是：","question":"从'天可汗'称号可以看出唐朝的民族政策特点是：","options":["武力征服为主","开明平等，民族交融","闭关锁国","和亲为主"],"answer":1,"hint":"天可汗称号体现各族对唐太宗的尊重，反映了开明平等的民族政策。","difficulty":"easy"},{"material":"鉴真东渡日本，前后6次才成功到达。他在日本传播佛教，还带去了建筑、雕塑、医药等知识。","question":"鉴真东渡日本的历史意义是什么？","options":["加强了中日军事同盟","促进了中日文化交流","扩大了唐朝的疆域","传播了儒家思想"],"answer":1,"hint":"鉴真东渡促进了中日文化交流，对日本文化产生了深远影响。","difficulty":"easy"},{"material":"唐朝时，长安、洛阳、扬州、广州等城市聚集了来自世界各地的商人和使节。","question":"根据材料，唐朝对外交往的特点是什么？","options":["闭关锁国，限制交流","开放包容，交流频繁","战争不断，冲突激烈","单向输出，不接纳外来文化"],"answer":1,"hint":"唐朝实行开放的外交政策，与亚非欧多个国家和地区有频繁的交往。","difficulty":"easy"},{"material":"元朝实行行省制度，行省'有钱粮、兵甲、屯种、漕运、军马重务，无不领之'，但重大事务须向中央请示。","question":"对行省权力特点的准确概括是：","options":["行省权力很大","行省权力受中央节制，体现了中央集权","行省什么都能管","行省制度很完善"],"answer":1,"hint":"选项B准确概括了行省权力的两面性——既有较大权力又受中央节制，体现了中央集权原则。","difficulty":"easy"},{"material":"明朝废除丞相，设内阁；清朝设军机处，'军国大计，罔不总揽'。从明到清，皇权不断强化。","question":"最能反映这一历史趋势的观点是：","options":["明清都没有丞相","君主专制不断强化，达到顶峰","内阁和军机处权力很大","为什么丞相被废除？"],"answer":1,"hint":"选项B准确概括了从明到清的政治演变趋势——君主专制不断强化直至顶峰。","difficulty":"easy"}]},{"title":"角度拆解","questions":[{"material":"观点：唐朝出现了盛世局面。","question":"论证这一观点，应从以下哪些角度展开？（多选）","options":[{"text":"政治：唐太宗虚心纳谏，完善三省六部制","correct":true},{"text":"经济：农业生产技术改进，手工业发达","correct":true},{"text":"文化：诗歌繁荣，书法绘画艺术发展","correct":true},{"text":"民族关系：实行开明的民族政策","correct":true},{"text":"军事：发动对外战争扩张领土","correct":false}],"hint":"论证盛世局面应从政治清明、经济发展、文化繁荣、民族和睦等角度展开。军事扩张不是盛世的核心体现。","difficulty":"easy"},{"material":"观点：宋朝经济得到很大发展。","question":"选择可以论证该观点的角度：","options":[{"text":"农业：引进占城稻，推广水稻种植技术","correct":true},{"text":"手工业：瓷器、丝织品大量出口","correct":true},{"text":"商业：海外贸易发达，设立市舶司","correct":true},{"text":"科技：三大发明对世界影响深远","correct":true},{"text":"军事：军队人数大幅增加","correct":false}],"hint":"科技成就是经济发展的重要推动力。军事人员增加不能直接证明经济发展。","difficulty":"easy"},{"material":"观点：元朝实现了大一统。","question":"应从哪些角度论证？","options":[{"text":"疆域：疆域超越汉唐，空前辽阔","correct":true},{"text":"行政：实行行省制度管理全国","correct":true},{"text":"民族：各民族交融，回族形成","correct":true},{"text":"边疆：设置宣政院管辖西藏","correct":true},{"text":"文化：废除科举制度","correct":false}],"hint":"元朝没有废除科举，反而恢复了科举。其他角度都能体现大一统。","difficulty":"easy"},{"material":"观点：中国古代农民起义沉重打击了王朝统治，推动了历史进步。","question":"论证时应考虑哪些角度？","options":[{"text":"直接作用：沉重打击王朝统治，少数成功推翻王朝","correct":true},{"text":"间接作用：迫使统治者调整政策，轻徭薄赋","correct":true},{"text":"失败原因：大多失败或被利用，阶级局限性","correct":true},{"text":"历史影响：推动生产力发展，促进社会变革","correct":true},{"text":"人物评价：领袖个人能力决定起义成败","correct":false}],"hint":"论证应全面客观：既要看到打击作用，也要看到大多数起义的失败命运和被利用的局限性，避免过度美化。","difficulty":"medium"},{"material":"观点：制度创新是国家强盛的关键。","question":"以下哪些角度可以论证？","options":[{"text":"秦朝：郡县制取代分封制，加强中央集权","correct":true},{"text":"隋朝：科举制创立，打破门阀垄断","correct":true},{"text":"元朝：行省制度，影响至今","correct":true},{"text":"唐宋：三省六部制不断完善","correct":true},{"text":"每个朝代都完全创新制度","correct":false}],"hint":"'完全创新'表述绝对化，应有继承和发展。","difficulty":"medium"},{"material":"观点：唐朝文化繁荣。","question":"应从哪些角度论证？","options":[{"text":"文学：诗歌创作达到高峰，李白杜甫为代表","correct":true},{"text":"书法：颜真卿、柳公权创立新风格","correct":true},{"text":"绘画：吴道子人物画成就突出","correct":true},{"text":"宗教：佛教中国化，禅宗兴起","correct":true},{"text":"军事：军队战斗力很强","correct":false}],"hint":"军事角度与文化繁荣无直接关系。","difficulty":"medium"},{"material":"观点：宋代科技成就突出。","question":"论证角度包括：","options":[{"text":"印刷术：活字印刷术发明，促进文化传播","correct":true},{"text":"指南针：应用于航海，推动海外贸易","correct":true},{"text":"火药：武器改良，军事技术进步","correct":true},{"text":"传播：三大发明传到欧洲，影响深远","correct":true},{"text":"农业：水稻产量提高","correct":false}],"hint":"农业角度属于经济领域，与科技成就主题不够直接。","difficulty":"medium"},{"material":"观点：中国古代选官制度不断进步。","question":"论证时应考虑哪些层面？","options":[{"text":"演变：世卿世禄→察举制→九品中正制→科举制","correct":true},{"text":"标准：血缘→品德→门第→考试成绩","correct":true},{"text":"作用：扩大统治基础，提高官员素质","correct":true},{"text":"趋势：选官权力从地方收归中央","correct":true},{"text":"局限：科举制完全公平","correct":false}],"hint":"'完全公平'表述绝对化，科举制也有局限性。","difficulty":"hard"},{"material":"观点：中国古代经济重心南移。","question":"论证需要哪些角度？","options":[{"text":"原因：北方战乱，人口南迁","correct":true},{"text":"过程：从唐朝中后期到南宋完成","correct":true},{"text":"表现：南方农业、手工业、商业超过北方","correct":true},{"text":"影响：南方成为国家财政主要来源","correct":true},{"text":"结果：北方经济完全衰落","correct":false}],"hint":"'完全衰落'表述绝对化，北方经济仍有发展。","difficulty":"hard"},{"material":"观点：丝绸之路促进了中外文明交流。","question":"论证角度应包括：","options":[{"text":"输出：丝绸、瓷器、茶叶、四大发明西传","correct":true},{"text":"输入：佛教、音乐、舞蹈、农产品传入","correct":true},{"text":"双向：物质、技术、文化交流","correct":true},{"text":"影响：促进东西方文明发展","correct":true},{"text":"局限：只对中国有利","correct":false}],"hint":"丝绸之路是双向交流，对东西方都有利。","difficulty":"hard"}]},{"title":"史论连线","questions":[{"material":"【史实】商鞅变法规定奖励耕战。\n【观点】商鞅变法增强了秦国的国力。","question":"用'因为…所以…'将史实与观点连接，填写完整论证：","type":"fill","answer":"因为商鞅变法规定奖励耕战，调动了农民和士兵的积极性，所以商鞅变法增强了秦国的国力。","hint":"史论连接要补全中间的逻辑链条——调动积极性是关键环节。","difficulty":"easy"},{"material":"【史实】大运河沟通了南北交通。\n【观点】大运河促进了南北经济交流。","question":"完成论证（补全逻辑链条）：","type":"fill","answer":"因为大运河沟通了南北交通，使南方的粮食、丝绸等物产可以运往北方，所以大运河促进了南北经济交流。","hint":"要具体说明沟通交通如何导致经济交流——运输物产是关键环节。","difficulty":"easy"},{"material":"【史实】唐朝实行开明的民族政策。\n【观点】唐朝民族关系和谐融洽。","question":"完成论证：","type":"fill","answer":"因为唐朝实行开明的民族政策，各族首领被尊为天可汗，唐蕃和亲促进了民族团结，所以唐朝民族关系和谐融洽。","hint":"要举出具体事例——天可汗、唐蕃和亲来支撑论断。","difficulty":"easy"},{"material":"【史实】科举制打破了门第限制。\n【观点】科举制促进了社会公平。","question":"完成论证：","type":"fill","answer":"因为科举制打破了门第限制，使出身寒门的子弟可以通过考试进入仕途，所以科举制促进了社会公平。","hint":"关键环节是寒门子弟可通过考试入仕这一具体机制。","difficulty":"medium"},{"material":"【史实】宋代海外贸易发达。\n【观点】宋代商业繁荣。","question":"完成论证：","type":"fill","answer":"因为宋代海外贸易发达，设立市舶司管理海外贸易，瓷器、丝织品大量出口，海外贸易税收成为重要财政来源，所以宋代商业繁荣。","hint":"要多个角度支撑——管理机构、出口商品、财政收入。","difficulty":"medium"},{"material":"【史实】元朝设置宣政院管辖西藏。\n【观点】西藏正式成为中央政府管辖的行政区域。","question":"完成论证：","type":"fill","answer":"因为元朝设置宣政院管辖西藏，中央政府对西藏行使有效管辖权，所以西藏正式成为中央政府管辖的行政区域。","hint":"关键环节是中央行使有效管辖权。","difficulty":"medium"},{"material":"【史实】明朝废除丞相制度。\n【观点】明朝君主专制强化。","question":"完成论证：","type":"fill","answer":"因为明朝废除丞相制度，皇帝直接统领六部，丞相权力不再对皇权构成制约，所以明朝君主专制强化。","hint":"关键环节是丞相不再制约皇权。","difficulty":"medium"},{"material":"【史实】北宋'冗官、冗兵、冗费'问题严重。\n【观点】北宋出现积贫积弱局面。","question":"完成论证：","type":"fill","answer":"因为北宋'冗官、冗兵、冗费'问题严重，官僚机构臃肿效率低下，军队数量庞大战斗力不强，财政负担沉重，所以北宋出现积贫积弱局面。","hint":"要分别说明三冗如何导致积贫积弱。","difficulty":"hard"},{"material":"【史实】清朝设军机处，'军国大计，罔不总揽'。\n【观点】清朝君主专制达到顶峰。","question":"完成论证：","type":"fill","answer":"因为清朝设军机处，军国大事完全由皇帝裁决，军机大臣只能跪受笔录，皇权不再受任何制约，所以清朝君主专制达到顶峰。","hint":"关键环节是皇权不受制约、军机大臣无决策权。","difficulty":"hard"},{"material":"【史实】唐朝实行开放的外交政策，与亚非欧70多个国家和地区有往来。\n【观点】唐朝是当时世界上的强国。","question":"完成论证：","type":"fill","answer":"因为唐朝实行开放的外交政策，与亚非欧70多个国家和地区有往来，长安成为国际大都市，外国使节和商人云集，唐朝文化影响深远，所以唐朝是当时世界上的强国。","hint":"要从外交开放、国际交流、文化影响等多个层面论证强国地位。","difficulty":"hard"}]},{"title":"完整论述","questions":[{"material":"（12分）阅读材料，回答问题。\n材料一：唐太宗在位期间，虚心纳谏，完善三省六部制，减轻人民负担，发展农业生产，史称'贞观之治'。\n材料二：唐玄宗在位前期，任用贤能，改革税制，发展经济，国力达到鼎盛，史称'开元盛世'。","question":"根据材料并结合所学知识，概括唐朝盛世局面出现的原因。（6分）
     {"q":"隋朝建立的时间是？","o":["581年","589年","618年","605年"],"a":0,"h":"581年，杨坚夺取北周政权建立隋朝","d":"l1"},
     {"q":"隋朝统一全国的时间是？","o":["581年","589年","618年","605年"],"a":1,"h":"589年，隋文帝灭陈朝，统一全国","d":"l1"},
     {"q":"隋朝大运河的中心是？","o":["长安","洛阳","涿郡","余杭"],"a":1,"h":"大运河以洛阳为中心，北抵涿郡，南至余杭","d":"l1"},
@@ -584,7 +587,8 @@ var CHS = [{"id":"c1","name":"隋唐时期：繁荣与开放的时代","stages":
     {"q":"北宋东京的商业区特点是？","o":["只在白天营业","严格限制在固定区域","沿街店铺林立，没有时空限制","只允许官营店铺"],"a":2,"h":"东京沿街店铺林立，商业不再受时空限制","d":"l3"},
     {"q":"宋代出现市民阶层的文化前提是？","o":["城市繁荣和商品经济发展","农业技术进步","军事力量增强","外来文化传入"],"a":0,"h":"城市繁荣和商品经济发展是市民文化的前提","d":"l3"},
     {"q":"《清明上河图》中不可能出现的场景是？","o":["商贩沿街叫卖","骆驼运输货物","火车穿过街道","船只在河上行驶"],"a":2,"h":"火车是近代产物，宋代不可能出现","d":"l1"}
-  ]}
+  ]},
+  {"name":"论述题特训","type":"essay","icon":"📝","desc":"掌握答题技巧，轻松应对论述题","trainings":ESSAY_TRAINS}
 ]}];
 // 等级称号
 var LVT = ["历史新手","历史学徒","历史勇士","历史精英","历史骑士","历史达人","历史高手","历史专家","历史大师","历史宗师","历史王者","历史霸主","历史传说","历史至尊","历史天尊","历史圣人","历史贤者","历史神者","历史创世","历史之神"];
@@ -717,6 +721,7 @@ function renderStages(){
   var html='';
   for(var i=0;i<currentChapter.stages.length;i++){
     var st = currentChapter.stages[i];
+    var isEssay = (st.type === 'essay');
     var stars = S.stars[st.name] || 0;
     var starStr = '';
     for(var j=0;j<3;j++){
@@ -731,8 +736,11 @@ function renderStages(){
       }
     }
     
-    html+='<div class="stage '+(locked?'locked':'')+'" onclick="'+(locked?'':'startStage('+i+')')+'">';
-    html+='<div class="stage-name">'+st.name+(locked?' 🔒':'')+'</div>';
+    var extraClass = locked ? 'locked' : (isEssay ? 'essay-stage' : '');
+    var icon = st.icon || (isEssay ? '📝' : '');
+    
+    html+='<div class="stage '+extraClass+'" onclick="'+(locked?'':(isEssay?'startEssayStage('+i+')':'startStage('+i+')'))+'">';
+    html+='<div class="stage-name '+(isEssay?'essay-title':'')+'">'+(icon?icon+' ':'')+st.name+(locked?' 🔒':'')+'</div>';
     html+='<div class="stage-stars">'+starStr+'</div>';
     html+='</div>';
   }
@@ -1089,6 +1097,224 @@ function trainByDiff(d){startTraining(collectAllQs(function(it){return(it.d||'l1
 function trainByChapter(c){var qs=[];for(var s=0;s<CHS[c].stages.length;s++){qs=qs.concat(CHS[c].stages[s].qs);}startTraining(qs);}
 function trainByType(t){startTraining(collectAllQs(function(it){return it.type===t;}));}
 function trainRandom(){startTraining(collectAllQs());}
+
+// ========== 论述题特训逻辑 ==========
+var currentEssayStage = null;
+var currentEssayQIdx = 0;
+var currentEssayQs = [];
+var essayCorrectCount = 0;
+var essayWrongCount = 0;
+
+function startEssayStage(idx){
+  currentStageIdx = idx;
+  currentStage = currentChapter.stages[idx];
+  currentEssayStage = currentStage.trainings;
+  currentEssayQIdx = 0;
+  essayCorrectCount = 0;
+  essayWrongCount = 0;
+  currentEssayQs = [];
+  
+  // 合并所有训练的题目
+  for(var i=0;i<currentEssayStage.length;i++){
+    for(var j=0;j<currentEssayStage[i].questions.length;j++){
+      currentEssayQs.push(currentEssayStage[i].questions[j]);
+    }
+  }
+  
+  document.getElementById('totalQ').textContent = currentEssayQs.length;
+  showScreen('quizScreen');
+  showEssayQuestion();
+}
+
+function showEssayQuestion(){
+  var q = currentEssayQs[currentEssayQIdx];
+  document.getElementById('currentQ').textContent = currentEssayQIdx + 1;
+  
+  var progress = (currentEssayQIdx / currentEssayQs.length) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+  
+  var html = '';
+  
+  // 显示材料
+  if(q.material){
+    html += '<div class="material-box">' + q.material.replace(/\n/g,'<br>') + '</div>';
+  }
+  
+  // 显示题目
+  var diffTag = q.difficulty ? '<span class="difficulty diff-'+q.difficulty+'">'+(q.difficulty==='easy'?'🟢简单':q.difficulty==='medium'?'🟡中等':'🔴困难')+'</span>' : '';
+  html += '<div class="question">' + diffTag + q.question + '</div>';
+  
+  // 选项类型判断
+  if(q.type === 'fill'){
+    html += '<div class="fill-blank"><textarea class="textarea-box" id="essayFill" placeholder="请输入完整答案..."></textarea>';
+    html += '<div class="word-count"><span id="wordCount">0</span> 字</div></div>';
+    html += '<div class="btn-group"><button class="btn" onclick="submitEssayFill()">提交答案</button></div>';
+  } else if(q.options && q.options[0] && q.options[0].text){
+    // 多选题
+    html += '<div class="checkboxes">';
+    for(var i=0;i<q.options.length;i++){
+      html += '<div class="checkbox-item"><input type="checkbox" id="cb'+i+'"><label for="cb'+i+'">'+q.options[i].text+'</label></div>';
+    }
+    html += '</div>';
+    html += '<div class="btn-group"><button class="btn" onclick="submitEssayMulti()">提交答案</button></div>';
+  } else {
+    // 单选题
+    html += '<div class="options">';
+    for(var i=0;i<q.options.length;i++){
+      html += '<div class="option" onclick="selectEssayOption('+i+')" id="opt'+i+'">' + q.options[i] + '</div>';
+    }
+    html += '</div>';
+    html += '<div class="btn-group"><button class="btn" onclick="submitEssayOption()">提交答案</button></div>';
+  }
+  
+  html += '<div class="hint" id="essayHint"></div>';
+  html += '<div class="btn-group"><button class="btn" id="essayNextBtn" style="display:none;background:#6c757d" onclick="nextEssayQuestion()">下一题</button></div>';
+  
+  document.getElementById('quizContainer').innerHTML = html;
+  
+  // 字数统计
+  var ta = document.getElementById('essayFill');
+  if(ta){
+    ta.oninput = function(){
+      document.getElementById('wordCount').textContent = this.value.length;
+    };
+  }
+}
+
+var selectedEssayOption = -1;
+function selectEssayOption(idx){
+  document.querySelectorAll('.option').forEach(function(o){o.classList.remove('selected');});
+  document.getElementById('opt'+idx).classList.add('selected');
+  selectedEssayOption = idx;
+}
+
+function submitEssayOption(){
+  if(selectedEssayOption === -1){alert('请先选择答案');return;}
+  var q = currentEssayQs[currentEssayQIdx];
+  var correct = (selectedEssayOption === q.answer);
+  if(correct){
+    essayCorrectCount++;
+    document.getElementById('opt'+selectedEssayOption).classList.add('correct');
+  } else {
+    essayWrongCount++;
+    document.getElementById('opt'+selectedEssayOption).classList.add('wrong');
+    document.getElementById('opt'+q.answer).classList.add('correct');
+    addWrongQ(q,'essay',currentChapterIdx,currentStageIdx);
+  }
+  document.getElementById('essayHint').className = 'hint show';
+  document.getElementById('essayHint').innerHTML = '💡 '+q.hint;
+  document.querySelectorAll('.option').forEach(function(o){o.classList.add('disabled');});
+  document.getElementById('essayNextBtn').style.display = 'inline-block';
+  selectedEssayOption = -1;
+}
+
+function submitEssayMulti(){
+  var q = currentEssayQs[currentEssayQIdx];
+  var correct = true;
+  var missed = [];
+  var wrong = [];
+  
+  for(var i=0;i<q.options.length;i++){
+    var cb = document.getElementById('cb'+i);
+    var item = cb.parentElement;
+    if(cb.checked && !q.options[i].correct){
+      correct = false;
+      wrong.push(i);
+      item.style.background='#f8d7da';
+    } else if(!cb.checked && q.options[i].correct){
+      correct = false;
+      missed.push(i);
+      item.style.background='#fff3cd';
+    } else if(cb.checked && q.options[i].correct){
+      item.style.background='#d4edda';
+    }
+  }
+  
+  if(correct){
+    essayCorrectCount++;
+  } else {
+    essayWrongCount++;
+    addWrongQ(q,'essay',currentChapterIdx,currentStageIdx);
+  }
+  
+  document.getElementById('essayHint').className = 'hint show';
+  document.getElementById('essayHint').innerHTML = '💡 '+q.hint;
+  document.querySelectorAll('.checkbox-item input').forEach(function(c){c.disabled=true;});
+  document.getElementById('essayNextBtn').style.display = 'inline-block';
+}
+
+function submitEssayFill(){
+  var ta = document.getElementById('essayFill');
+  var q = currentEssayQs[currentEssayQIdx];
+  var userAnswer = ta.value.trim();
+  
+  // 简单匹配（实际应用中可以用更复杂的算法）
+  var correct = (userAnswer.length > 20 && (userAnswer.indexOf(q.answer.substr(0,15)) !== -1 || q.answer.indexOf(userAnswer.substr(0,15)) !== -1));
+  
+  if(correct){
+    essayCorrectCount++;
+    ta.style.borderColor='#28a745';
+  } else {
+    essayWrongCount++;
+    ta.style.borderColor='#dc3545';
+    addWrongQ(q,'essay',currentChapterIdx,currentStageIdx);
+  }
+  
+  // 显示参考答案
+  var refBox = document.createElement('div');
+  refBox.className = 'reference-box show';
+  refBox.innerHTML = '<div class="reference-title">📖 参考答案</div><div class="reference-text">'+q.answer+'</div>';
+  ta.parentElement.appendChild(refBox);
+  
+  document.getElementById('essayHint').className = 'hint show';
+  document.getElementById('essayHint').innerHTML = '💡 '+q.hint;
+  ta.disabled = true;
+  document.getElementById('essayNextBtn').style.display = 'inline-block';
+}
+
+function nextEssayQuestion(){
+  currentEssayQIdx++;
+  if(currentEssayQIdx >= currentEssayQs.length){
+    showEssayResult();
+  } else {
+    showEssayQuestion();
+  }
+}
+
+function showEssayResult(){
+  var total = currentEssayQs.length;
+  var rate = Math.round((essayCorrectCount / total) * 100);
+  
+  // 记录星星
+  var stageName = currentStage.name;
+  var stars = rate >= 90 ? 3 : rate >= 70 ? 2 : rate >= 50 ? 1 : 0;
+  S.stars[stageName] = Math.max(S.stars[stageName] || 0, stars);
+  saveS();
+  
+  // 更新金币和正确率
+  var coins = Math.round(essayCorrectCount * 10);
+  S.coins += coins;
+  S.totalAnswered += total;
+  S.totalCorrect += essayCorrectCount;
+  updateStats();
+  saveS();
+  
+  // 显示结果
+  var html = '<div class="result-icon">'+(rate>=70?'🎉':'😅')+'</div>';
+  html += '<div class="result-title">论述题特训完成</div>';
+  html += '<div class="result-stats">';
+  html += '<div class="result-stat"><div class="num">'+essayCorrectCount+'</div><div class="txt">正确</div></div>';
+  html += '<div class="result-stat"><div class="num">'+essayWrongCount+'</div><div class="txt">错误</div></div>';
+  html += '<div class="result-stat"><div class="num">'+rate+'%</div><div class="txt">正确率</div></div>';
+  html += '</div>';
+  html += '<div class="reward">获得 '+coins+' 金币！</div>';
+  html += '<div class="btn-group">';
+  html += '<button class="btn" onclick="startEssayStage('+currentStageIdx+')">再试一次</button>';
+  html += '<button class="btn" onclick="showScreen(\'stageScreen\')">返回关卡</button>';
+  html += '</div>';
+  
+  document.getElementById('quizContainer').innerHTML = html;
+}
 
 // 初始化
 updateStats();
