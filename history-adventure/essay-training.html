@@ -544,11 +544,10 @@ var TRAININGS = [
     title: "完整论述（补充）",
     questions: [
       {
-        material: "阅读材料，回答问题。\n\n材料一：秦末陈胜吴广起义提出"王侯将相，宁有种乎"，建立了张楚政权，但最终失败。\n材料二：东汉黄巾起义提出"苍天已死，黄天当立"，动摇了东汉统治，但因力量分散最终被镇压。\n材料三：唐末黄巢起义转战南北，"冲天香阵透长安"，沉重打击了唐朝统治，但最终失败。\n\n【要求】根据材料，分析中国古代农民起义的作用和局限性。",
+        material: "阅读材料，回答问题。\n\n材料一：秦末陈胜吴广起义提出「王侯将相，宁有种乎」，建立了张楚政权，但最终失败。\n材料二：东汉黄巾起义提出「苍天已死，黄天当立」，动摇了东汉统治，但因力量分散最终被镇压。\n材料三：唐末黄巢起义转战南北，「冲天香阵透长安」，沉重打击了唐朝统治，但最终失败。\n\n【要求】根据材料，分析中国古代农民起义的作用和局限性。",
         question: "请撰写完整论述：",
         type: "essay",
-        answer: "中国古代农民起义沉重打击了王朝统治，但大多以失败告终。\n\n陈胜吴广起义提出"王侯将相，宁有种乎"，开创农民反抗先河，沉重打击秦朝统治。黄巾起义动摇了东汉统治基础。黄巢起义转战南北，沉重打击唐朝统治，加速其灭亡。然而，农民起义因缺乏先进理论指导、组织松散，往往被地主官僚利用或镇压，最终大多失败。\n\n结论：农民起义虽有局限性，但仍是推动历史进步的重要力量。",
-        wordLimit: [100, 160],
+        answer: "中国古代农民起义沉重打击了王朝统治，但大多以失败告终。\n\n陈胜吴广起义提出「王侯将相，宁有种乎」，开创农民反抗先河，沉重打击秦朝统治。黄巾起义动摇了东汉统治基础。黄巢起义转战南北，沉重打击唐朝统治，加速其灭亡。然而，农民起义因缺乏先进理论指导、组织松散，往往被地主官僚利用或镇压，最终大多失败。\n\n结论：农民起义虽有局限性，但仍是推动历史进步的重要力量。",
         hint: "论述要点：列举起义的积极作用（沉重打击）→分析失败原因/局限性→得出客观评价",
         difficulty: "hard"
       }
@@ -759,9 +758,19 @@ function submitAnswer() {
     });
 
     document.querySelectorAll('.checkbox-item').forEach(function(cb, i) {
+      var input = cb.querySelector('input');
       if (q.options[i].correct) {
         cb.style.border = '2px solid #28a745';
         cb.style.background = '#d4edda';
+        input.checked = true; // 正确答案打勾
+      }
+      if (state.selections.includes(i) && !q.options[i].correct) {
+        cb.style.border = '2px solid #dc3545';
+        cb.style.background = '#f8d7da'; // 选错的标红
+      }
+      if (!state.selections.includes(i) && q.options[i].correct) {
+        cb.style.outline = '3px dashed #ffc107'; // 漏选的正确答案加黄虚线
+        cb.style.background = '#fff3cd';
       }
     });
 
