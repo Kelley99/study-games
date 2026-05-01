@@ -69,6 +69,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 .diff-l3{background:#f8d7da;color:#721c24}
 .diff-l4{background:#343a40;color:#fff}
 .material-box{background:#e7f3ff;border:1px solid #b8daff;border-radius:12px;padding:20px;margin-bottom:20px;text-align:left;font-size:15px;line-height:1.8;white-space:pre-wrap}
+
+/* 错题本 & 学习报告 & 专项训练 */
+.wrong-btn,.report-btn,.train-btn{display:inline-block;padding:8px 16px;border-radius:20px;margin:5px;font-size:13px;cursor:pointer;border:none;font-weight:bold}
+.wrong-btn{background:#ff6b6b;color:#fff}
+.report-btn{background:#4ecdc4;color:#fff}
+.train-btn{background:#45b7d1;color:#fff}
+.wrong-btn:hover,.report-btn:hover,.train-btn:hover{opacity:0.85;transform:scale(1.05)}
+.tool-bar{display:flex;justify-content:center;flex-wrap:wrap;margin:15px 0}
+.wrong-list{max-height:60vh;overflow-y:auto;padding:10px}
+.wrong-item{background:#fff3f3;border-left:3px solid #ff6b6b;padding:10px;margin:8px 0;border-radius:0 8px 8px 0;font-size:13px}
+.wrong-item .q-text{font-weight:bold;margin-bottom:5px}
+.wrong-item .q-info{color:#999;font-size:12px}
+.wrong-item .q-answer{color:#2ecc71;margin-top:4px}
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;justify-content:center}
+.filter-chip{padding:5px 12px;border-radius:15px;font-size:12px;cursor:pointer;border:1px solid #ddd;background:#f8f9fa;transition:all .2s}
+.filter-chip.active{background:#007bff;color:#fff;border-color:#007bff}
+.stat-card{background:#fff;border-radius:12px;padding:15px;margin:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);text-align:center}
+.stat-card .stat-num{font-size:28px;font-weight:bold;color:#2c3e50}
+.stat-card .stat-label{font-size:12px;color:#999;margin-top:4px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.chart-bar{display:flex;align-items:center;margin:4px 0;font-size:12px}
+.chart-bar .bar-label{width:70px;text-align:right;margin-right:8px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-bar .bar-fill{height:18px;border-radius:9px;min-width:4px;transition:width .5s}
+.chart-bar .bar-val{margin-left:6px;color:#999;font-size:11px}
+.empty-state{text-align:center;padding:40px 20px;color:#999}
+.empty-state .empty-icon{font-size:48px;margin-bottom:10px}
+.back-btn{display:inline-block;padding:8px 20px;background:#6c757d;color:#fff;border-radius:20px;cursor:pointer;font-size:13px;margin:10px}
+.back-btn:hover{background:#5a6268}
+.retry-wrong-btn{display:inline-block;padding:10px 24px;background:#ff6b6b;color:#fff;border-radius:25px;cursor:pointer;font-size:14px;font-weight:bold;margin:10px}
+.retry-wrong-btn:hover{background:#e55555}
 </style>
 </head>
 <body>
@@ -95,6 +125,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 
   <div id="homeScreen" class="screen active">
     <h2 style="margin-bottom:20px;text-align:center">选择章节</h2>
+    <div class="tool-bar"><span class="wrong-btn" onclick="showWrongBook()">📓 错题本</span><span class="report-btn" onclick="showReport()">📊 学习报告</span><span class="train-btn" onclick="showTrain()">🎯 专项训练</span></div>
     <a href="./essay-training.html" class="essay-btn">
       <div class="title">📝 论述题特训</div>
       <div class="desc">掌握答题技巧，轻松应对论述题</div>
@@ -102,7 +133,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
     <div id="chapterList" class="chapter-list"></div>
   </div>
 
-  <div id="stageScreen" class="screen">
+  
+  <!-- Wrong Book Screen -->
+  <div id="wrongScreen" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>📓 错题本</h2>
+      <span class="back-btn" onclick="showScreen('homeScreen')">← 返回</span>
+    </div>
+    <div class="filter-bar" id="wrongFilter"></div>
+    <div id="wrongSummary" style="text-align:center;margin:10px 0;font-size:14px;color:#666"></div>
+    <div class="wrong-list" id="wrongList"></div>
+    <div style="text-align:center" id="wrongActions"></div>
+  </div>
+
+  <!-- Report Screen -->
+  <div id="reportScreen" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>📊 学习报告</h2>
+      <span class="back-btn" onclick="showScreen('homeScreen')">← 返回</span>
+    </div>
+    <div class="stat-grid" id="reportStats"></div>
+    <h3 style="margin:15px 0 5px;font-size:14px">章节正确率</h3>
+    <div id="reportChart"></div>
+    <h3 style="margin:15px 0 5px;font-size:14px">薄弱知识点</h3>
+    <div id="weakPoints"></div>
+  </div>
+
+  <!-- Train Screen -->
+  <div id="trainScreen" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>🎯 专项训练</h2>
+      <span class="back-btn" onclick="showScreen('homeScreen')">← 返回</span>
+    </div>
+    <div style="padding:10px">
+      <h3 style="font-size:14px;margin:10px 0">选择训练模式</h3>
+      <div id="trainOptions"></div>
+    </div>
+  </div>
+
+<div id="stageScreen" class="screen">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <h2 id="chapterTitle">章节标题</h2>
       <button class="btn" onclick="showScreen('homeScreen')">返回</button>
@@ -572,7 +641,9 @@ function defS(){
     totDays:0,
     c2unlocked:false,
     materialCount:0, // 材料题正确数
-    l4Count:0       // L4难度完成数
+    l4Count:0,
+    totWrong:0,
+    wrongQs:[]       // 错题记录
   }
 }
 
@@ -742,6 +813,13 @@ function selectOption(idx){
       if(parseInt(opts[i].dataset.idx)===idx) opts[i].classList.add('wrong');
     }
     document.getElementById('hintBox').classList.add('show');
+    if(!S.wrongQs)S.wrongQs=[];
+    var wk=currentStage.name+'_'+currentQIndex;
+    var ex=false;
+    for(var w=0;w<S.wrongQs.length;w++){if(S.wrongQs[w].key===wk){ex=true;S.wrongQs[w].count=(S.wrongQs[w].count||1)+1;S.wrongQs[w].yourPick=idx;break;}}
+    if(!ex){S.wrongQs.push({key:wk,q:q.q,o:q.o,a:q.a,h:q.h,d:q.d||'l1',type:q.type||'',chapter:currentChapter.name,stage:currentStage.name,time:Date.now(),yourPick:idx,count:1});}
+    S.totWrong=(S.totWrong||0)+1;
+    saveS();
   }
   
   S.totAns++;
@@ -879,6 +957,138 @@ function nextStage(){
     startStage(currentStageIdx + 1);
   }
 }
+
+
+// ========== Wrong Book ==========
+var wrongFilterChapter='all';
+function showWrongBook(){
+  if(!S.wrongQs||S.wrongQs.length===0){
+    document.getElementById('wrongSummary').textContent='';
+    document.getElementById('wrongList').innerHTML='<div class="empty-state"><div class="empty-icon">🎉</div><div>还没有错题，继续保持！</div></div>';
+    document.getElementById('wrongActions').innerHTML='';
+    document.getElementById('wrongFilter').innerHTML='';
+    showScreen('wrongScreen');return;
+  }
+  var chapters=['all'];
+  for(var i=0;i<S.wrongQs.length;i++){if(chapters.indexOf(S.wrongQs[i].chapter)===-1)chapters.push(S.wrongQs[i].chapter);}
+  var fh='';
+  for(var i=0;i<chapters.length;i++){
+    var lb=chapters[i]==='all'?'全部':chapters[i];
+    var cl=wrongFilterChapter===chapters[i]?'active':'';
+    fh+='<span class="filter-chip '+cl+'" onclick="filterWrong(\''+chapters[i]+'\')">'+lb+'</span>';
+  }
+  document.getElementById('wrongFilter').innerHTML=fh;
+  renderWrongList();
+  showScreen('wrongScreen');
+}
+function filterWrong(ch){wrongFilterChapter=ch;showWrongBook();}
+function renderWrongList(){
+  var fd=S.wrongQs||[];
+  if(wrongFilterChapter!=='all')fd=fd.filter(function(w){return w.chapter===wrongFilterChapter;});
+  fd.sort(function(a,b){return(b.count||1)-(a.count||1);});
+  document.getElementById('wrongSummary').textContent='共 '+fd.length+' 道错题';
+  var h='',dm={l1:'🟡基础',l2:'🟢提高',l3:'🟡挑战',l4:'🔴困难'};
+  for(var i=0;i<fd.length;i++){
+    var w=fd[i];
+    h+='<div class="wrong-item"><div class="q-text">'+(w.type==='material'?'📋 ':'')+w.q.substring(0,80)+(w.q.length>80?'...':'')+'</div>';
+    h+='<div class="q-info">'+w.stage+' · '+(dm[w.d]||'🟡基础')+(w.count>1?' · 错'+w.count+'次':'')+'</div>';
+    h+='<div class="q-answer">✅ '+String.fromCharCode(65+w.a)+'. '+w.o[w.a]+'</div>';
+    h+='<div style="margin-top:6px"><span style="color:#007bff;cursor:pointer;font-size:12px" onclick="retrySingleWrong('+i+')">🔄 重练</span> <span style="color:#999;cursor:pointer;font-size:12px;margin-left:10px" onclick="removeWrong('+i+')">🗑 移除</span></div></div>';
+  }
+  document.getElementById('wrongList').innerHTML=h;
+  var ah='';
+  if(fd.length>0){ah='<span class="retry-wrong-btn" onclick="retryAllWrong()">🔄 重练全部错题</span><br><span style="color:#999;font-size:12px;cursor:pointer;margin-top:8px;display:inline-block" onclick="clearAllWrong()">清空错题本</span>';}
+  document.getElementById('wrongActions').innerHTML=ah;
+}
+function removeWrong(idx){
+  var fd=S.wrongQs||[];
+  if(wrongFilterChapter!=='all')fd=fd.filter(function(w){return w.chapter===wrongFilterChapter;});
+  var t=fd[idx];if(t){var ri=S.wrongQs.indexOf(t);if(ri>=0)S.wrongQs.splice(ri,1);saveS();renderWrongList();}
+}
+function clearAllWrong(){if(confirm('确定清空所有错题记录？')){S.wrongQs=[];saveS();showWrongBook();}}
+function retrySingleWrong(idx){
+  var fd=S.wrongQs||[];
+  if(wrongFilterChapter!=='all')fd=fd.filter(function(w){return w.chapter===wrongFilterChapter;});
+  var t=fd[idx];if(t){currentQuestions=[t];currentQIndex=0;correctCount=0;wrongCount=0;materialCorrectCount=0;document.getElementById('totalQ').textContent=1;showScreen('quizScreen');showQuestion();}
+}
+function retryAllWrong(){
+  var fd=S.wrongQs||[];
+  if(wrongFilterChapter!=='all')fd=fd.filter(function(w){return w.chapter===wrongFilterChapter;});
+  if(fd.length===0)return;
+  currentQuestions=fd.slice();currentQIndex=0;correctCount=0;wrongCount=0;materialCorrectCount=0;
+  document.getElementById('totalQ').textContent=currentQuestions.length;showScreen('quizScreen');showQuestion();
+}
+
+// ========== Learning Report ==========
+function showReport(){
+  var tq=S.totAns||0,to=S.totOk||0,tw=S.wrongQs?S.wrongQs.length:0;
+  var ac=tq>0?Math.round(to/tq*100):0;
+  document.getElementById('reportStats').innerHTML=
+    '<div class="stat-card"><div class="stat-num">'+tq+'</div><div class="stat-label">总答题</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:#2ecc71">'+ac+'%</div><div class="stat-label">正确率</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:#ff6b6b">'+tw+'</div><div class="stat-label">错题数</div></div>'+
+    '<div class="stat-card"><div class="stat-num">'+S.coins+'</div><div class="stat-label">金币</div></div>'+
+    '<div class="stat-card"><div class="stat-num">Lv.'+S.lv+'</div><div class="stat-label">等级</div></div>'+
+    '<div class="stat-card"><div class="stat-num">'+S.streak+'</div><div class="stat-label">连胜</div></div>';
+  var ch2='',colors=['#3498db','#e74c3c','#2ecc71','#f39c12','#9b59b6','#1abc9c'];
+  for(var c2i=0;c2i<CHS.length;c2i++){
+    var cOk=0,cTot=0;
+    for(var s=0;s<CHS[c2i].stages.length;s++){
+      var sn=CHS[c2i].stages[s].name,st2=S.stars[sn]||0;
+      if(st2>=3)cOk+=CHS[c2i].stages[s].qs.length*0.9;
+      else if(st2===2)cOk+=CHS[c2i].stages[s].qs.length*0.75;
+      else if(st2===1)cOk+=CHS[c2i].stages[s].qs.length*0.55;
+      cTot+=CHS[c2i].stages[s].qs.length;
+    }
+    var ca=cTot>0?Math.round(cOk/cTot*100):0;
+    var co=colors[c2i%colors.length];
+    var lb=CHS[c2i].name.length>8?CHS[c2i].name.substring(0,8)+'…':CHS[c2i].name;
+    ch2+='<div class="chart-bar"><span class="bar-label">'+lb+'</span><span class="bar-fill" style="width:'+ca+'%;background:'+co+'"></span><span class="bar-val">'+ca+'%</span></div>';
+  }
+  document.getElementById('reportChart').innerHTML=ch2;
+  var sw={};if(S.wrongQs){for(var i=0;i<S.wrongQs.length;i++){var w=S.wrongQs[i];sw[w.stage]=(sw[w.stage]||0)+(w.count||1);}}
+  var wa=[];for(var k in sw)wa.push({name:k,count:sw[k]});
+  wa.sort(function(a,b){return b.count-a.count;});
+  var wh='';if(wa.length===0){wh='<div style="color:#999;font-size:13px;text-align:center;padding:10px">暂无薄弱项</div>';}
+  else{for(var i=0;i<Math.min(5,wa.length);i++){wh+='<div class="chart-bar"><span class="bar-label">'+wa[i].name+'</span><span class="bar-fill" style="width:'+Math.min(100,wa[i].count*15)+'%;background:#ff6b6b"></span><span class="bar-val">错'+wa[i].count+'次</span></div>';}}
+  document.getElementById('weakPoints').innerHTML=wh;
+  showScreen('reportScreen');
+}
+
+// ========== Special Training ==========
+function showTrain(){
+  var h='<div style="margin:15px 0"><h4 style="font-size:14px;color:#666;margin-bottom:8px">按难度训练</h4>';
+  var ds=[{d:'l1',n:'🟡 基础题',p:'夷实基础'},{d:'l2',n:'🟢 提高题',p:'能力提升'},{d:'l3',n:'🟡 挑战题',p:'思维进阶'},{d:'l4',n:'🔴 困难题',p:'极限挑战'}];
+  for(var i=0;i<ds.length;i++){
+    h+='<div style="display:inline-block;margin:5px;padding:10px 16px;background:#f0f4f8;border-radius:12px;cursor:pointer" onclick="trainByDiff(\''+ds[i].d+'\')"><div style="font-weight:bold;font-size:13px">'+ds[i].n+'</div><div style="font-size:11px;color:#999">'+ds[i].p+'</div></div>';
+  }
+  h+='</div><div style="margin:15px 0"><h4 style="font-size:14px;color:#666;margin-bottom:8px">按章节训练</h4>';
+  for(var c2i=0;c2i<CHS.length;c2i++){
+    h+='<div style="display:inline-block;margin:5px;padding:10px 16px;background:#e8f5e9;border-radius:12px;cursor:pointer" onclick="trainByChapter('+c2i+')"><div style="font-weight:bold;font-size:13px">'+CHS[c2i].name.substring(0,10)+'</div><div style="font-size:11px;color:#999">'+CHS[c2i].stages.length+'关</div></div>';
+  }
+  h+='</div><div style="margin:15px 0"><h4 style="font-size:14px;color:#666;margin-bottom:8px">按题型训练</h4>';
+  h+='<div style="display:inline-block;margin:5px;padding:10px 16px;background:#fff3e0;border-radius:12px;cursor:pointer" onclick="trainByType(\'material\')"><div style="font-weight:bold;font-size:13px">📋 材料分析题</div><div style="font-size:11px;color:#999">史料解读专项</div></div>';
+  h+='</div><div style="margin:15px 0"><h4 style="font-size:14px;color:#666;margin-bottom:8px">综合训练</h4>';
+  h+='<div style="display:inline-block;margin:5px;padding:10px 16px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:12px;cursor:pointer;color:#fff" onclick="trainRandom()"><div style="font-weight:bold;font-size:13px">🎲 随机20题</div><div style="font-size:11px;opacity:0.8">全题库随机抽取</div></div>';
+  h+='</div>';
+  document.getElementById('trainOptions').innerHTML=h;
+  showScreen('trainScreen');
+}
+function collectAllQs(fn){
+  var all=[];
+  for(var c2i=0;c2i<CHS.length;c2i++){for(var s=0;s<CHS[c2i].stages.length;s++){for(var q=0;q<CHS[c2i].stages[s].qs.length;q++){var it=CHS[c2i].stages[s].qs[q];if(!fn||fn(it,c2i,s))all.push(it);}}}
+  return all;
+}
+function shuffleArr(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startTraining(qs){
+  if(qs.length===0){alert('该分类下暂无题目');return;}
+  currentQuestions=shuffleArr(qs).slice(0,20);currentQIndex=0;correctCount=0;wrongCount=0;materialCorrectCount=0;
+  document.getElementById('totalQ').textContent=currentQuestions.length;showScreen('quizScreen');showQuestion();
+}
+function trainByDiff(d){startTraining(collectAllQs(function(it){return(it.d||'l1')===d;}));}
+function trainByChapter(c){var qs=[];for(var s=0;s<CHS[c].stages.length;s++){qs=qs.concat(CHS[c].stages[s].qs);}startTraining(qs);}
+function trainByType(t){startTraining(collectAllQs(function(it){return it.type===t;}));}
+function trainRandom(){startTraining(collectAllQs());}
 
 // 初始化
 updateStats();
