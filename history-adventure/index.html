@@ -668,7 +668,7 @@ function saveS(){
 function isChapter2Unlocked(){
   if(S.c2unlocked) return true;
   var ch1 = CHS[0];
-  if(ch1.stages.length < 6) return false; // 确保至少有6关
+  if(ch1.stages.length < 1) return false;
   for(var i=0;i<ch1.stages.length;i++){
     if(!S.stars[ch1.stages[i].name] || S.stars[ch1.stages[i].name] < 1) return false;
   }
@@ -698,12 +698,12 @@ function renderHome(){
     var locked = (i===1 && !isChapter2Unlocked());
     var allDone = !locked && ch.stages.every(function(s){return S.stars[s.name]&&S.stars[s.name]>=1});
     
-    var tagClass = locked ? 'tag-locked' : allDone ? 'tag-done' : i===0 ? 'tag-current' : 'tag-locked';
-    var tagText = locked ? '🔒 未解锁' : allDone ? '✓ 已完成' : i===0 ? '当前章节' : '🔒 未解锁';
+    var tagClass = locked ? 'tag-locked' : allDone ? 'tag-done' : 'tag-current';
+    var tagText = locked ? '🔒 未解锁' : allDone ? '✓ 已完成' : '当前章节';
     
     html+='<div class="chapter '+(locked?'locked':allDone?'done':'current')+'" onclick="'+(locked?'':'selectChapter('+i+')')+'">';
     html+='<div class="chapter-title">'+ch.name+'</div>';
-    html+='<div class="chapter-desc">'+ch.stages.length+'个关卡 · '+ch.stages.reduce(function(a,s){return a+s.qs.length},0)+'道题目</div>';
+    html+='<div class="chapter-desc">'+ch.stages.length+'个关卡 · '+ch.stages.reduce(function(a,s){return a+(s.qs?s.qs.length:0)},0)+'道题目</div>';
     html+='<span class="chapter-tag '+tagClass+'">'+tagText+'</span>';
     html+='</div>';
   }
@@ -1044,10 +1044,12 @@ function showReport(){
     var cOk=0,cTot=0;
     for(var s=0;s<CHS[c2i].stages.length;s++){
       var sn=CHS[c2i].stages[s].name,st2=S.stars[sn]||0;
-      if(st2>=3)cOk+=CHS[c2i].stages[s].qs.length*0.9;
-      else if(st2===2)cOk+=CHS[c2i].stages[s].qs.length*0.75;
-      else if(st2===1)cOk+=CHS[c2i].stages[s].qs.length*0.55;
-      cTot+=CHS[c2i].stages[s].qs.length;
+      var qLen=CHS[c2i].stages[s].qs?CHS[c2i].stages[s].qs.length:0;
+      if(qLen===0)continue;
+      if(st2>=3)cOk+=qLen*0.9;
+      else if(st2===2)cOk+=qLen*0.75;
+      else if(st2===1)cOk+=qLen*0.55;
+      cTot+=qLen;
     }
     var ca=cTot>0?Math.round(cOk/cTot*100):0;
     var co=colors[c2i%colors.length];
@@ -1085,7 +1087,7 @@ function showTrain(){
 }
 function collectAllQs(fn){
   var all=[];
-  for(var c2i=0;c2i<CHS.length;c2i++){for(var s=0;s<CHS[c2i].stages.length;s++){for(var q=0;q<CHS[c2i].stages[s].qs.length;q++){var it=CHS[c2i].stages[s].qs[q];if(!fn||fn(it,c2i,s))all.push(it);}}}
+  for(var c2i=0;c2i<CHS.length;c2i++){for(var s=0;s<CHS[c2i].stages.length;s++){if(!CHS[c2i].stages[s].qs)continue;for(var q=0;q<CHS[c2i].stages[s].qs.length;q++){var it=CHS[c2i].stages[s].qs[q];if(!fn||fn(it,c2i,s))all.push(it);}}}
   return all;
 }
 function shuffleArr(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
@@ -1095,7 +1097,7 @@ function startTraining(qs){
   document.getElementById('totalQ').textContent=currentQuestions.length;showScreen('quizScreen');showQuestion();
 }
 function trainByDiff(d){startTraining(collectAllQs(function(it){return(it.d||'l1')===d;}));}
-function trainByChapter(c){var qs=[];for(var s=0;s<CHS[c].stages.length;s++){qs=qs.concat(CHS[c].stages[s].qs);}startTraining(qs);}
+function trainByChapter(c){var qs=[];for(var s=0;s<CHS[c].stages.length;s++){if(CHS[c].stages[s].qs)qs=qs.concat(CHS[c].stages[s].qs);}startTraining(qs);}
 function trainByType(t){startTraining(collectAllQs(function(it){return it.type===t;}));}
 function trainRandom(){startTraining(collectAllQs());}
 
