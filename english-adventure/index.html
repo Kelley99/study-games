@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>英语大冒险</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#333}
+.container{max-width:800px;margin:0 auto;padding:20px}
+.header{text-align:center;color:#fff;margin-bottom:20px}
+.header h1{font-size:28px;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+.header p{font-size:14px;opacity:0.9}
+.stats{display:flex;justify-content:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.stat-box{background:rgba(255,255,255,0.95);padding:12px 20px;border-radius:15px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.2);min-width:90px}
+.stat-box .value{font-size:22px;font-weight:bold;color:#667eea}
+.stat-box .label{font-size:11px;color:#666;margin-top:4px}
+.screen{display:none;background:rgba(255,255,255,0.98);border-radius:20px;padding:25px;box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+.screen.active{display:block}
+.chapter-list{display:grid;gap:15px}
+.chapter{background:#f8f9fa;border-radius:15px;padding:18px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border:2px solid transparent;position:relative}
+.chapter:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,0,0,0.1)}
+.chapter.current{border-color:#667eea;background:#f0f4ff}
+.chapter.locked{opacity:0.6;cursor:not-allowed}
+.chapter.done{border-color:#28a745;background:#f0fff4}
+.chapter-icon{font-size:28px;margin-bottom:8px}
+.chapter-title{font-size:16px;font-weight:bold;color:#333;margin-bottom:4px}
+.chapter-desc{font-size:13px;color:#666;margin-bottom:8px}
+.chapter-tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px}
+.tag-current{background:#667eea;color:#fff}
+.tag-locked{background:#6c757d;color:#fff}
+.tag-done{background:#28a745;color:#fff}
+.tag-progress{background:#ffc107;color:#333}
+.quiz-container{text-align:center}
+.progress{margin-bottom:20px}
+.progress-bar{height:8px;background:#e9ecef;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2);transition:width 0.3s}
+.progress-text{font-size:14px;color:#666;margin-top:8px}
+.question-type{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;margin-bottom:12px;font-weight:bold}
+.type-word{background:#e8f5e9;color:#2e7d32}
+.type-phrase{background:#fff3e0;color:#e65100}
+.type-sentence{background:#e3f2fd;color:#1565c0}
+.question{font-size:18px;font-weight:bold;color:#333;margin-bottom:20px;line-height:1.6;text-align:left}
+.options{display:grid;gap:10px;max-width:500px;margin:0 auto}
+.option{background:#f8f9fa;border:2px solid #e9ecef;border-radius:12px;padding:12px 15px;cursor:pointer;transition:all 0.2s;text-align:left;font-size:15px}
+.option:hover{border-color:#667eea;background:#f0f4ff}
+.option.correct{border-color:#28a745;background:#d4edda;color:#155724}
+.option.wrong{border-color:#dc3545;background:#f8d7da;color:#721c24}
+.option.disabled{pointer-events:none;opacity:0.7}
+.btn{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;padding:12px 25px;border-radius:25px;cursor:pointer;font-size:16px;transition:transform 0.2s,box-shadow 0.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4)}
+.btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.btn-back{background:#6c757d;margin-top:15px}
+.btn-group{display:flex;gap:15px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.result{text-align:center;padding:30px 20px}
+.result-icon{font-size:70px;margin-bottom:15px}
+.result-title{font-size:24px;font-weight:bold;color:#333;margin-bottom:10px}
+.result-stats{display:flex;justify-content:center;gap:30px;margin:20px 0}
+.result-stat{text-align:center}
+.result-stat .num{font-size:32px;font-weight:bold;color:#667eea}
+.result-stat .txt{font-size:13px;color:#666}
+.star-display{font-size:28px;margin:10px 0}
+.wrong-review{margin-top:15px;text-align:left}
+.wrong-item{background:#f8d7da;border:1px solid #f5c6cb;border-radius:8px;padding:10px;margin-bottom:8px;font-size:14px;color:#721c24}
+.wrong-item .wi-q{font-weight:bold;margin-bottom:4px}
+.wrong-item .wi-a{color:#155724;font-size:13px}
+.wrong-item .wi-y{color:#721c24;font-size:13px}
+.unit-color-bar{height:4px;border-radius:2px;margin-bottom:10px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>✨ 英语大冒险</h1>
+<p>七年级下册 · 8大单元 · 96道挑战</p>
+</div>
+
+<div id="statsBar" class="stats">
+<div class="stat-box"><div class="value" id="totalStars">0</div><div class="label">星星总数</div></div>
+<div class="stat-box"><div class="value" id="unitsCleared">0</div><div class="label">通关单元</div></div>
+<div class="stat-box"><div class="value" id="totalCorrect">0</div><div class="label">答对题数</div></div>
+</div>
+
+<!-- Main Menu Screen -->
+<div id="menuScreen" class="screen active">
+<div class="chapter-list" id="chapterList"></div>
+</div>
+
+<!-- Quiz Screen -->
+<div id="quizScreen" class="screen">
+<div class="progress">
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-text" id="progressText">1 / 12</div>
+</div>
+<div id="questionType" class="question-type type-word">词形</div>
+<div class="question" id="questionText"></div>
+<div class="options" id="optionsContainer"></div>
+<div class="btn-group">
+<button class="btn btn-back" onclick="backToMenu()">返回</button>
+<button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题 →</button>
+</div>
+</div>
+
+<!-- Result Screen -->
+<div id="resultScreen" class="screen">
+<div class="result-icon" id="resultIcon"></div>
+<div class="result-title" id="resultTitle"></div>
+<div class="star-display" id="starDisplay"></div>
+<div class="result-stats">
+<div class="result-stat"><div class="num" id="resultCorrect">0</div><div class="txt">答对</div></div>
+<div class="result-stat"><div class="num" id="resultWrong">0</div><div class="txt">答错</div></div>
+<div class="result-stat"><div class="num" id="resultAccuracy">0%</div><div class="txt">正确率</div></div>
+</div>
+<div class="wrong-review" id="wrongReview"></div>
+<div class="btn-group">
+<button class="btn btn-back" onclick="backToMenu()">返回单元</button>
+<button class="btn" onclick="retryUnit()">重新挑战</button>
+</div>
+</div>
+</div>
+
+<script>
+// Game data
+const UNITS = [{"id": 1, "title": "Unit 1: People around us", "desc": "身边的人——词形转换、重点短语与句型", "icon": "👥", "color": "#6C5CE7", "questions": [{"q": "advice 的词性是？", "opts": ["可数名词", "不可数名词", "动词", "形容词"], "ans": 1, "type": "词形"}, {"q": "encourage 的名词形式是？", "opts": ["encouraging", "encouraged", "encouragement", "courage"], "ans": 2, "type": "词形"}, {"q": "cheerful 的副词形式是？", "opts": ["cheer", "cheering", "cheerfully", "cheerless"], "ans": 2, "type": "词形"}, {"q": "medical 的名词形式是？", "opts": ["medication", "medicine", "meditate", "medium"], "ans": 1, "type": "词形"}, {"q": "bored 和 boring 的区别？", "opts": ["bored 令人厌烦，boring 感到厌烦", "bored 感到厌烦，boring 令人厌烦", "两者相同", "bored 是动词，boring 是形容词"], "ans": 1, "type": "词形"}, {"q": "\"鼓励某人做某事\"的英文是？", "opts": ["encourage sb. doing", "encourage sb. to do", "encourage sb. do", "encourage sb. done"], "ans": 1, "type": "短语"}, {"q": "\"对某人要求严格\"用英语怎么说？", "opts": ["be strict about sb.", "be strict with sb.", "be strict in sb.", "be strict to sb."], "ans": 1, "type": "短语"}, {"q": "\"习惯于做某事\"的正确表达是？", "opts": ["used to do", "be used to do", "be used to doing", "be used for doing"], "ans": 2, "type": "短语"}, {"q": "\"放弃做某事\"用英语怎么说？", "opts": ["give up to do", "give up doing", "give up do", "give up done"], "ans": 1, "type": "短语"}, {"q": "\"太…而不能…\"的结构是？", "opts": ["too...to do", "too...for doing", "so...that do", "very...to do"], "ans": 0, "type": "短语"}, {"q": "Wherever I go in the future, I will never forget the taste of her cooking. 划线部分 Wherever 表示？", "opts": ["哪里", "无论哪里", "每当", "然而"], "ans": 1, "type": "句型"}, {"q": "That's why I seldom feel bored in his maths lessons. 这句话中 why 引导的是？", "opts": ["定语从句", "表语从句", "宾语从句", "状语从句"], "ans": 1, "type": "句型"}]}, {"id": 2, "title": "Unit 2: Travelling around the world", "desc": "环游世界——词形转换、重点短语与句型", "icon": "🌍", "color": "#00B894", "questions": [{"q": "perfect 的副词形式是？", "opts": ["perfection", "perfectly", "perfective", "perfected"], "ans": 1, "type": "词形"}, {"q": "lie（位于）的过去式和过去分词是？", "opts": ["lay, lain", "lied, lied", "lay, laid", "laid, laid"], "ans": 0, "type": "词形"}, {"q": "imagine 的名词形式是？", "opts": ["image", "imagination", "imaginative", "imaginary"], "ans": 1, "type": "词形"}, {"q": "danger 的形容词形式是？", "opts": ["dangerous", "endangered", "dangerless", "dangering"], "ans": 0, "type": "词形"}, {"q": "France 的形容词形式是？", "opts": ["Francish", "French", "Francy", "Francelike"], "ans": 1, "type": "词形"}, {"q": "\"以…而闻名\"用英语怎么说？", "opts": ["be famous as", "be famous for", "be famous in", "be famous with"], "ans": 1, "type": "短语"}, {"q": "\"宁愿做…而不做…\"的结构是？", "opts": ["prefer to do...rather than do", "prefer doing...than doing", "prefer do...rather do", "prefer to do...to do"], "ans": 0, "type": "短语"}, {"q": "\"全年\"用英语怎么说？", "opts": ["all year long", "all year round", "whole year round", "full year around"], "ans": 1, "type": "短语"}, {"q": "\"富含…\"用英语怎么说？", "opts": ["be rich for", "be rich in", "be rich with", "be rich of"], "ans": 1, "type": "短语"}, {"q": "\"自然保护区\"的正确表达是？", "opts": ["a protected area of nature", "a nature protected area", "a protecting nature area", "a nature protect area"], "ans": 0, "type": "短语"}, {"q": "France is one of the most visited countries in the world. 这句话用了什么结构？", "opts": ["one of + 最高级 + 复数名词", "the most + 形容词 + 名词", "more + 形容词 + than", "as + 形容词 + as"], "ans": 0, "type": "句型"}, {"q": "why not visit France this year? 中 why not 后面接什么？", "opts": ["doing", "to do", "do（动词原形）", "done"], "ans": 2, "type": "句型"}]}, {"id": 3, "title": "Unit 3: Trees and us", "desc": "树木与我们——词形转换、重点短语与句型", "icon": "🌳", "color": "#00CEC9", "questions": [{"q": "silent 的名词形式是？", "opts": ["silently", "silence", "silencer", "silen"], "ans": 1, "type": "词形"}, {"q": "create 的形容词形式是？", "opts": ["creation", "creative", "creator", "creating"], "ans": 1, "type": "词形"}, {"q": "environment 的形容词形式是？", "opts": ["environmental", "environmentally", "environmented", "enviro"], "ans": 0, "type": "词形"}, {"q": "convenient 的副词形式是？", "opts": ["convenience", "conveniently", "conveniency", "conveniential"], "ans": 1, "type": "词形"}, {"q": "wood 的形容词形式是？", "opts": ["wooded", "wooden", "woody", "wooding"], "ans": 1, "type": "词形"}, {"q": "\"由…制成\"（能看出原材料）用？", "opts": ["be made of", "be made from", "be made in", "be made up of"], "ans": 0, "type": "短语"}, {"q": "\"由…制成\"（看不出原材料）用？", "opts": ["be made of", "be made from", "be made in", "be made up of"], "ans": 1, "type": "短语"}, {"q": "\"号召；动员\"用英语怎么说？", "opts": ["call on", "call for", "call up", "call in"], "ans": 0, "type": "短语"}, {"q": "\"与…沟通\"用英语怎么说？", "opts": ["communicate to", "communicate with", "communicate for", "communicate about"], "ans": 1, "type": "短语"}, {"q": "\"为某人提供某物\"的正确表达是？", "opts": ["provide sb. with sth.", "provide sb. for sth.", "provide sth. to sb.", "provide sb. about sth."], "ans": 0, "type": "短语"}, {"q": "\"我们无法想象一个没有它们的世界\"的正确翻译是？", "opts": ["We can't imagine a world with them.", "We can't imagine a world without them.", "We can imagine a world without them.", "We can't imagine a world no them."], "ans": 1, "type": "句型"}, {"q": "Trees can ask each other for help when bad things happen to them. 这句话的主语是？", "opts": ["Trees", "help", "bad things", "them"], "ans": 0, "type": "句型"}]}, {"id": 4, "title": "Unit 4: Our animal friends", "desc": "动物朋友——词形转换、重点短语与句型", "icon": "🐕", "color": "#E17055", "questions": [{"q": "asleep 的反义词是？", "opts": ["sleepy", "awake", "sleep", "waking"], "ans": 1, "type": "词形"}, {"q": "help 的形容词形式（有帮助的）是？", "opts": ["helpless", "helpful", "helping", "helped"], "ans": 1, "type": "词形"}, {"q": "safe 的名词形式是？", "opts": ["safeness", "safety", "safing", "save"], "ans": 1, "type": "词形"}, {"q": "scared 和 scary 的区别是？", "opts": ["scared 令人害怕，scary 感到害怕", "scared 感到害怕，scary 令人害怕", "两者意思相同", "scared 是名词，scary 是形容词"], "ans": 1, "type": "词形"}, {"q": "service 的动词形式是？", "opts": ["serve", "servant", "service", "serving"], "ans": 0, "type": "词形"}, {"q": "\"因…向某人道谢\"用英语怎么说？", "opts": ["apologize to sb. for sth.", "thank sb. for sth.", "apologize for sb. sth.", "sorry to sb. for sth."], "ans": 1, "type": "短语"}, {"q": "\"入睡\"用英语怎么说？", "opts": ["fall asleep", "fall sleep", "fall sleeping", "feel asleep"], "ans": 0, "type": "短语"}, {"q": "\"在某人的帮助下\"用英语怎么说？", "opts": ["under one's help", "with one's help", "by one's help", "in one's help"], "ans": 1, "type": "短语"}, {"q": "\"独自地\"用英语怎么说？", "opts": ["by oneself", "for oneself", "of oneself", "to oneself"], "ans": 0, "type": "短语"}, {"q": "\"把某人叫醒\"用英语怎么说？", "opts": ["wake sb. up", "wake up sb.", "waken sb.", "awake sb. up"], "ans": 0, "type": "短语"}, {"q": "It's hard for me to get around by myself. 中 for me 是什么成分？", "opts": ["真正的主语", "逻辑主语（不定式的逻辑主语）", "宾语", "状语"], "ans": 1, "type": "句型"}, {"q": "The minutes seemed like hours. 这句话用了什么修辞手法？", "opts": ["排比", "比喻/夸张", "拟人", "反问"], "ans": 1, "type": "句型"}]}, {"id": 5, "title": "Unit 5: Water is life", "desc": "水是生命——词形转换、重点短语与句型", "icon": "💧", "color": "#0984E3", "questions": [{"q": "salt 的形容词形式是？", "opts": ["salty", "salted", "salting", "saltish"], "ans": 0, "type": "词形"}, {"q": "value 的形容词形式（宝贵的）是？", "opts": ["valuable", "valued", "valueless", "valuely"], "ans": 0, "type": "词形"}, {"q": "valueless 的意思是？", "opts": ["宝贵的", "无价值的", "有价值的", "便宜的"], "ans": 1, "type": "词形"}, {"q": "explain 的名词形式是？", "opts": ["explanation", "explaining", "explan", "explaination"], "ans": 0, "type": "词形"}, {"q": "sudden 的副词形式是？", "opts": ["suddently", "suddenly", "suddenful", "suddenness"], "ans": 1, "type": "词形"}, {"q": "\"关闭\"用英语怎么说？", "opts": ["turn on", "turn off", "turn up", "turn down"], "ans": 1, "type": "短语"}, {"q": "\"一滴…\"用英语怎么说？", "opts": ["a piece of", "a drop of", "a glass of", "a bottle of"], "ans": 1, "type": "短语"}, {"q": "\"把…加入…中\"用英语怎么说？", "opts": ["add...to...", "add...in...", "add...into...", "add...with..."], "ans": 0, "type": "短语"}, {"q": "\"因为，由于\"用英语怎么说？", "opts": ["because", "thanks to", "as result", "for to"], "ans": 1, "type": "短语"}, {"q": "\"在…扮演重要角色\"用英语怎么说？", "opts": ["play a big role in", "play a big role for", "make a big role in", "take a big role in"], "ans": 0, "type": "短语"}, {"q": "First... Then... After that... Finally... 这种结构通常用于？", "opts": ["对比", "举例", "描述顺序/过程", "因果"], "ans": 2, "type": "句型"}, {"q": "About 70% of the Earth's surface is water. 70% 读作？", "opts": ["seventy percent", "seventy percents", "seventieth percent", "seventy percentage"], "ans": 0, "type": "句型"}]}, {"id": 6, "title": "Unit 6: Electricity everywhere", "desc": "电无处不在——词形转换、重点短语与句型", "icon": "⚡", "color": "#FDCB6E", "questions": [{"q": "electricity 的形容词形式（用电的）是？", "opts": ["electric", "electrical", "electronic", "electrified"], "ans": 0, "type": "词形"}, {"q": "electricity 的形容词形式（带电的/导电的）是？", "opts": ["electric", "electrical", "electronic", "electrified"], "ans": 1, "type": "词形"}, {"q": "power 的形容词形式是？", "opts": ["powerful", "powerless", "powering", "powered"], "ans": 0, "type": "词形"}, {"q": "instruct 的名词形式（用法说明）是？", "opts": ["instruction", "instructor", "instructing", "instructions"], "ans": 0, "type": "词形"}, {"q": "teach 的过去式是？", "opts": ["teached", "taught", "teach", "teaching"], "ans": 1, "type": "词形"}, {"q": "\"用完；耗尽\"用英语怎么说？", "opts": ["run out of", "run away from", "run into", "run over"], "ans": 0, "type": "短语"}, {"q": "\"远离\"用英语怎么说？", "opts": ["stay away from", "keep away", "go away", "far from"], "ans": 0, "type": "短语"}, {"q": "\"不再…\"用英语怎么说？", "opts": ["not...any more", "not...any long", "no...more", "not...more any"], "ans": 0, "type": "短语"}, {"q": "\"太阳能\"用英语怎么说？", "opts": ["sun power", "solar power", "sunny energy", "sun energy"], "ans": 1, "type": "短语"}, {"q": "\"用湿手触碰电器\"的正确说法是？", "opts": ["touch electrical appliances with wet hands", "touch electric appliances in wet hands", "touch electricity with wet hand", "touch electronic by wet hands"], "ans": 0, "type": "短语"}, {"q": "it turned out that... 中 turned out 的意思是？", "opts": ["关掉", "结果是/证明是", "出现", "翻转"], "ans": 1, "type": "句型"}, {"q": "Small changes can make a great difference. 这句话告诉我们的道理是？", "opts": ["改变很困难", "小小的改变也能产生巨大的影响", "大变化才有影响", "改变没有意义"], "ans": 1, "type": "句型"}]}, {"id": 7, "title": "Unit 7: Role models of our time", "desc": "时代楷模——词形转换、重点短语与句型", "icon": "⭐", "color": "#E84393", "questions": [{"q": "contribute 的名词形式是？", "opts": ["contribution", "contributing", "contributor", "contributed"], "ans": 0, "type": "词形"}, {"q": "achieve 的名词形式是？", "opts": ["achievement", "achieving", "achiever", "achievable"], "ans": 0, "type": "词形"}, {"q": "die 的名词形式是？", "opts": ["dead", "death", "dying", "died"], "ans": 1, "type": "词形"}, {"q": "brave 的名词形式是？", "opts": ["braveness", "bravery", "braving", "bravement"], "ans": 1, "type": "词形"}, {"q": "proud 的名词形式是？", "opts": ["proudness", "pride", "prouding", "priding"], "ans": 1, "type": "词形"}, {"q": "\"献身；致力于…\"用英语怎么说？", "opts": ["devote oneself to", "devote oneself for", "devote to do", "devote for doing"], "ans": 0, "type": "短语"}, {"q": "\"敬仰；钦佩\"用英语怎么说？", "opts": ["look up", "look up to", "look at", "look for"], "ans": 1, "type": "短语"}, {"q": "\"为…而自豪\"用英语怎么说？", "opts": ["be proud of", "be proud for", "be proud with", "be proud about"], "ans": 0, "type": "短语"}, {"q": "\"渴望做某事\"用英语怎么说？", "opts": ["be eager to do", "be eager doing", "be eager for do", "eagerly to do"], "ans": 0, "type": "短语"}, {"q": "\"在…方面起关键作用\"用英语怎么说？", "opts": ["play a key role in", "make a key role in", "take a key role in", "have a key role for"], "ans": 0, "type": "短语"}, {"q": "he lived a simple life and was not interested in fame or money. 这句话说明他？", "opts": ["追求名利", "生活简朴，淡泊名利", "喜欢赚钱", "生活奢侈"], "ans": 1, "type": "句型"}, {"q": "devote oneself to 中 to 是什么词性？", "opts": ["不定式符号，后接动词原形", "介词，后接动名词", "副词", "连词"], "ans": 1, "type": "句型"}]}, {"id": 8, "title": "Unit 8: Follow your interests", "desc": "追随兴趣——词形转换、重点短语与句型", "icon": "🌟", "color": "#6C5CE7", "questions": [{"q": "possible 的反义词是？", "opts": ["unpossible", "impossible", "dispossible", "nonpossible"], "ans": 1, "type": "词形"}, {"q": "live 的形容词形式（活泼的）是？", "opts": ["living", "alive", "lively", "lived"], "ans": 2, "type": "词形"}, {"q": "curious 的名词形式是？", "opts": ["curiousness", "curiosity", "curio", "curation"], "ans": 1, "type": "词形"}, {"q": "able 的反义词是？", "opts": ["unable", "disable", "inable", "nonable"], "ans": 0, "type": "词形"}, {"q": "perform 的名词形式（演出）是？", "opts": ["performance", "performer", "performing", "perform"], "ans": 0, "type": "词形"}, {"q": "\"梦想\"（动词短语）用英语怎么说？", "opts": ["dream of", "dream for", "dream to", "dream with"], "ans": 0, "type": "短语"}, {"q": "\"实现\"（梦想）用英语怎么说？", "opts": ["come true", "come real", "come truth", "come truly"], "ans": 0, "type": "短语"}, {"q": "\"对…感到好奇\"用英语怎么说？", "opts": ["be curious about", "be curious for", "be curious with", "be curious to"], "ans": 0, "type": "短语"}, {"q": "\"把…比作…\"用英语怎么说？", "opts": ["compare...to...", "compare...with...", "compare...for...", "compare...as..."], "ans": 0, "type": "短语"}, {"q": "\"过去常常做某事\"用英语怎么说？", "opts": ["used to do", "be used to do", "be used to doing", "used to doing"], "ans": 0, "type": "短语"}, {"q": "I used to go outside with my mum on clear nights. used to 表示？", "opts": ["习惯于", "过去常常", "被用来", "使用"], "ans": 1, "type": "句型"}, {"q": "Once I learnt a little about them, I soon wanted to find out more and more. Once 在这里的意思是？", "opts": ["一次", "曾经", "一旦", "同时"], "ans": 2, "type": "句型"}]}];
+
+// State
+let state = loadState();
+let currentUnit = 0;
+let currentQ = 0;
+let correct = 0;
+let wrongList = [];
+let answered = false;
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('english_adventure_state'));
+    if (s && s.version === 2) return s;
+  } catch(e) {}
+  return { version: 2, unitStars: {}, unitBest: {}, totalCorrect: 0 };
+}
+
+function saveState() {
+  localStorage.setItem('english_adventure_state', JSON.stringify(state));
+}
+
+function getStars(count, total) {
+  const pct = count / total;
+  if (pct >= 0.9) return 3;
+  if (pct >= 0.7) return 2;
+  if (pct >= 0.5) return 1;
+  return 0;
+}
+
+function updateStats() {
+  let totalStars = 0, unitsCleared = 0;
+  UNITS.forEach((u, i) => {
+    const s = state.unitStars[i] || 0;
+    totalStars += s;
+    if (s >= 1) unitsCleared++;
+  });
+  document.getElementById('totalStars').textContent = totalStars;
+  document.getElementById('unitsCleared').textContent = unitsCleared;
+  document.getElementById('totalCorrect').textContent = state.totalCorrect;
+}
+
+function renderMenu() {
+  const list = document.getElementById('chapterList');
+  list.innerHTML = '';
+  UNITS.forEach((u, i) => {
+    const stars = state.unitStars[i] || 0;
+    const prevStars = i > 0 ? (state.unitStars[i-1] || 0) : 1;
+    const locked = i > 0 && prevStars === 0;
+    const starStr = '\★'.repeat(stars) + '\☆'.repeat(3 - stars);
+
+    let tagClass, tagText;
+    if (locked) { tagClass = 'tag-locked'; tagText = '未解锁'; }
+    else if (stars === 3) { tagClass = 'tag-done'; tagText = '完美通关'; }
+    else if (stars > 0) { tagClass = 'tag-progress'; tagText = starStr; }
+    else { tagClass = 'tag-current'; tagText = '待挑战'; }
+
+    const chClass = locked ? 'chapter locked' : (stars >= 3 ? 'chapter done' : (stars > 0 ? 'chapter current' : 'chapter'));
+
+    list.innerHTML += `
+      <div class="${chClass}" onclick="${locked ? '' : 'startUnit(' + i + ')'}">
+        <div class="unit-color-bar" style="background:${u.color}"></div>
+        <div class="chapter-icon">${u.icon}</div>
+        <div class="chapter-title">${u.title}</div>
+        <div class="chapter-desc">${u.desc}</div>
+        <span class="chapter-tag ${tagClass}">${tagText}</span>
+      </div>`;
+  });
+  updateStats();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startUnit(idx) {
+  currentUnit = idx;
+  currentQ = 0;
+  correct = 0;
+  wrongList = [];
+  showScreen('quizScreen');
+  showQuestion();
+}
+
+function showQuestion() {
+  const u = UNITS[currentUnit];
+  const q = u.questions[currentQ];
+  answered = false;
+
+  document.getElementById('progressFill').style.width = ((currentQ + 1) / u.questions.length * 100) + '%';
+  document.getElementById('progressText').textContent = (currentQ + 1) + ' / ' + u.questions.length;
+
+  const typeEl = document.getElementById('questionType');
+  typeEl.textContent = q.type;
+  typeEl.className = 'question-type ' + (q.type === '词形' ? 'type-word' : q.type === '短语' ? 'type-phrase' : 'type-sentence');
+
+  document.getElementById('questionText').textContent = q.q;
+
+  const optsEl = document.getElementById('optionsContainer');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    optsEl.innerHTML += `<div class="option fade-in" onclick="selectAnswer(${i})" style="animation-delay:${i * 0.05}s">${String.fromCharCode(65 + i)}. ${opt}</div>`;
+  });
+
+  document.getElementById('nextBtn').disabled = true;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+
+  const u = UNITS[currentUnit];
+  const q = u.questions[currentQ];
+  const opts = document.querySelectorAll('.option');
+
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[q.ans].classList.add('correct');
+
+  if (idx === q.ans) {
+    correct++;
+  } else {
+    opts[idx].classList.add('wrong');
+    wrongList.push({ q: q.q, yourAns: q.opts[idx], correctAns: q.opts[q.ans] });
+  }
+
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').textContent = currentQ < u.questions.length - 1 ? '下一题 →' : '查看结果 →';
+}
+
+function nextQuestion() {
+  const u = UNITS[currentUnit];
+  currentQ++;
+  if (currentQ >= u.questions.length) {
+    showResult();
+  } else {
+    showQuestion();
+  }
+}
+
+function showResult() {
+  const u = UNITS[currentUnit];
+  const total = u.questions.length;
+  const stars = getStars(correct, total);
+  const prevStars = state.unitStars[currentUnit] || 0;
+
+  if (stars > prevStars) state.unitStars[currentUnit] = stars;
+  state.totalCorrect += correct;
+  saveState();
+
+  const icons = ['😢', '😊', '🎉', '🏆'];
+  const titles = ['继续加油！', '不错哦！', '太棒了！', '完美通关！'];
+
+  document.getElementById('resultIcon').textContent = icons[stars];
+  document.getElementById('resultTitle').textContent = titles[stars] + ' ' + u.title;
+  document.getElementById('starDisplay').textContent = '★'.repeat(stars) + '☆'.repeat(3 - stars);
+  document.getElementById('resultCorrect').textContent = correct;
+  document.getElementById('resultWrong').textContent = total - correct;
+  document.getElementById('resultAccuracy').textContent = Math.round(correct / total * 100) + '%';
+
+  let wrongHtml = '';
+  if (wrongList.length > 0) {
+    wrongHtml = '<h3 style="margin-bottom:10px">📝 错题回顾</h3>';
+    wrongList.forEach(w => {
+      wrongHtml += `<div class="wrong-item"><div class="wi-q">${w.q}</div><div class="wi-a">✅ 正确答案：${w.correctAns}</div><div class="wi-y">❌ 你的答案：${w.yourAns}</div></div>`;
+    });
+  }
+  document.getElementById('wrongReview').innerHTML = wrongHtml;
+
+  showScreen('resultScreen');
+}
+
+function backToMenu() {
+  renderMenu();
+  showScreen('menuScreen');
+}
+
+function retryUnit() {
+  startUnit(currentUnit);
+}
+
+// Initialize
+renderMenu();
+</script>
+</body>
+</html>
