@@ -118,6 +118,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
         <div class="question" id="questionText">题目内容</div>
         <div class="options" id="optionsBox"></div>
         <div class="hint" id="hintBox"></div>
+        <button id="nextBtn" class="btn" style="display:none;margin-top:15px;" onclick="goNext()">继续 →</button>
       </div>
     </div>
   </div>
@@ -3251,6 +3252,7 @@ function showQuestion(){
   document.getElementById('optionsBox').innerHTML=html;
   document.getElementById('hintBox').classList.remove('show');
   document.getElementById('hintBox').textContent='💡 '+q.h;
+  document.getElementById('nextBtn').style.display='none';
 }
 
 function selectOption(idx){
@@ -3267,24 +3269,36 @@ function selectOption(idx){
   if(idx===q.a){
     correctCount++;
     S.totOk++;
+    // 答对：1.5秒后自动继续
+    setTimeout(function(){
+      currentQIndex++;
+      if(currentQIndex<currentQuestions.length){
+        showQuestion();
+      } else {
+        showResult();
+      }
+    },1500);
   } else {
     wrongCount++;
     for(var i=0;i<opts.length;i++){
       if(parseInt(opts[i].dataset.idx)===idx) opts[i].classList.add('wrong');
     }
     document.getElementById('hintBox').classList.add('show');
+    // 答错：显示"继续"按钮，等待用户点击
+    document.getElementById('nextBtn').style.display='inline-block';
   }
   
   S.totAns++;
-  
-  setTimeout(function(){
-    currentQIndex++;
-    if(currentQIndex<currentQuestions.length){
-      showQuestion();
-    } else {
-      showResult();
-    }
-  },1500);
+}
+
+function goNext(){
+  document.getElementById('nextBtn').style.display='none';
+  currentQIndex++;
+  if(currentQIndex<currentQuestions.length){
+    showQuestion();
+  } else {
+    showResult();
+  }
 }
 
 function showResult(){
