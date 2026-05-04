@@ -20,6 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 .btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4)}
 .btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
 .essay-btn{display:block;background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:#fff;border-radius:15px;padding:20px;margin-bottom:20px;cursor:pointer;transition:all 0.2s;text-decoration:none}.essay-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(231,76,60,0.4)}.essay-btn .title{font-size:18px;font-weight:bold;margin-bottom:8px}.essay-btn .desc{font-size:14px;opacity:0.9}.chapter-list{display:grid;gap:15px}
+.bonus-chapter{cursor:pointer;margin-top:20px}
 .chapter{background:#f8f9fa;border-radius:15px;padding:20px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border:2px solid transparent}
 .chapter:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,0,0,0.1)}
 .chapter.current{border-color:#667eea;background:#f0f4ff}
@@ -3361,13 +3362,49 @@ var currentQIndex = 0;
 var correctCount = 0;
 var wrongCount = 0;
 
-function defS(){return{coins:0,xp:0,lv:1,streak:0,lastDay:null,stars:{},badges:[],totOk:0,totAns:0,totDays:0,c2unlocked:false}}
+function defS(){return{coins:0,xp:0,lv:1,streak:0,lastDay:null,stars:{},badges:[],totOk:0,totAns:0,totDays:0,c2unlocked:false,bonusUnlocked:true}}
 function loadS(){try{var s=JSON.parse(localStorage.getItem("historyAdv2"));return s&&s.coins!==undefined?s:defS()}catch(e){return defS()}}
 function saveS(){localStorage.setItem("historyAdv2",JSON.stringify(S))}
 
 function isChapter2Unlocked(){
   // 已取消锁定，所有章节均可直接访问
   return true;
+}
+
+function isAllStagesPerfect(){
+  return S.bonusUnlocked === true;
+}
+
+var HISTORY_BONUS_QS = [
+  {"q":"与秦朝相比，隋朝统一的意义有何不同？","o":["结束了长期分裂局面，但统一后治理时间更长","首次结束三国两晋南北朝的长期分裂","完成了黄河流域的统一","统一了东北地区"],"a":1,"h":"隋朝结束了三国两晋南北朝约400年的长期分裂，意义与秦朝一脉相承","d":"hard"},
+  {"q":"隋炀帝开通大运河的根本目的是？","o":["发展南北经济贸易","方便个人巡游享乐","加强南北交通，巩固全国统一","运输江南粮食支援北方"],"a":2,"h":"作为政治家，隋炀帝开运河的首要目的是政治稳定而非个人享乐","d":"med"},
+  {"q":"科举制取代九品中正制的历史进步性在于？","o":["考试比推荐更公平","打破了门阀士族对仕途的垄断","扩大了封建统治的社会基础","加强了中央集权"],"a":1,"h":"九品中正制以门第为选官标准，科举制不问出身，是历史的巨大进步","d":"med"},
+  {"q":"唐太宗说「以史为鉴，可以知兴替」，他主要吸取了哪些朝代灭亡的教训？","o":["秦朝和隋朝","两汉和三国","南北朝和隋朝","秦朝和两汉"],"a":0,"h":"唐太宗亲眼看到隋朝的速亡，以此为鉴开创贞观之治","d":"hard"},
+  {"q":"「贞观之治」出现的根本原因是？","o":["唐太宗虚心纳谏","农民起义推动改革","轻徭薄赋、与民休息的政策","科举制选拔人才"],"a":2,"h":"吸取隋亡教训，实行轻徭薄赋、与民休息是治世出现的根本原因","d":"hard"},
+  {"q":"比较贞观之治与开元盛世，两者最大的共同点是？","o":["经济繁荣人口增长","政治清明社会安定","都出现了盛世局面但持续时间有限","粮食产量大幅增加"],"a":1,"h":"两个盛世局面都建立在政治清明、社会安定的基础之上","d":"med"},
+  {"q":"唐朝「海纳百川」的文化政策反映了什么时代特征？","o":["统治者思想开放","国力强盛，自信包容","外来文化优于本土文化","佛教主导社会思想"],"a":1,"h":"文化自信源于国力强盛，唐朝是中华文化包容性最强盛的时期","d":"hard"},
+  {"q":"安史之乱爆发的主要原因是？","o":["杨贵妃误国","安禄山谋反","均田制破坏，土地兼并严重","唐朝对外战争失败"],"a":2,"h":"根本原因是均田制破坏导致的社会矛盾激化，安禄山叛乱只是导火索","d":"hard"},
+  {"q":"辽宋夏金元时期民族政权并立，你认为这一时期的突出特点是？","o":["战争不断，无积极意义","民族交融步伐加快，封建化深入","只有汉族政权有意义","分裂倒退，毫无进步"],"a":1,"h":"民族战争客观上促进了民族交融，各民族都在向封建社会演进","d":"hard"},
+  {"q":"从南宋到元朝，政治中心从杭州转移到北京，这一变化反映了？","o":["中国经济重心南移","蒙古族入主中原","全国政治中心北移","南宋灭亡的必然性"],"a":2,"h":"元朝统一全国后，北京成为全国政治中心，影响延续至今","d":"hard"}
+];
+
+function startBonusStage(){
+  currentStage = {name:"历史深度挑战", qs: HISTORY_BONUS_QS};
+  currentChapter = {name:"彩蛋关卡"};
+  currentStageIdx = -1;
+  var pool = shuffle(HISTORY_BONUS_QS.slice());
+  currentQuestions = pool.slice(0, 10);
+  for(var i=0;i<currentQuestions.length;i++){
+    var q = currentQuestions[i];
+    var origAnswer = q.o[q.a];
+    q.o = shuffle(q.o);
+    q.a = q.o.indexOf(origAnswer);
+  }
+  currentQIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  showScreen('quizScreen');
+  showQuestion();
 }
 
 function updateStats(){
@@ -3408,6 +3445,9 @@ function renderHome(){
     html+='<div class="chapter-desc">'+ch.stages.length+' 个关卡 '+stars+'</div>';
     html+=tag;
     html+='</div>';
+  }
+  if(isAllStagesPerfect()){
+    html += '<div class="chapter bonus-chapter" onclick="startBonusStage()" style="background:linear-gradient(135deg,#ff6b6b,#ffa500);border:3px solid #ff4757;animation:pulse 2s infinite;"><div class="chapter-title">🎉 彩蛋关卡：历史深度挑战</div><div class="chapter-desc">10道深度分析题目 · 探究历史规律</div><span class="chapter-tag" style="background:#ff4757;color:#fff;">⭐ 隐藏关卡</span></div>';
   }
   document.getElementById('chapterList').innerHTML=html;
 }
