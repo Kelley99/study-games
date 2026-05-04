@@ -1,0 +1,25 @@
+{
+  "id": "session-1776514118280-exg8r1",
+  "name": "OCR功能完成",
+  "status": "active",
+  "createdAt": "2026-05-03T10:54:04.374Z",
+  "updatedAt": "2026-05-04T06:14:45.588Z",
+  "agents": [
+    {
+      "id": "agent_i8vohucm",
+      "name": "agent-29b6e205",
+      "role": "assistant",
+      "status": "idle",
+      "createdAt": "2026-05-03T10:54:04.374Z",
+      "model": "unknown",
+      "systemPrompt": ""
+    }
+  ],
+  "summary": {
+    "id": "summary_v354ofj0",
+    "title": "OCR功能完成",
+    "createdAt": "2026-05-03T10:54:04.375Z",
+    "file": "summary_v354ofj0.md"
+  },
+  "lastMessageCount": 43
+}

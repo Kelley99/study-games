@@ -1,0 +1,25 @@
+{
+  "id": "f0b577ee-f233-4a85-b2f0-696b6983d170",
+  "name": "读书日检",
+  "status": "active",
+  "createdAt": "2026-05-03T11:08:20.700Z",
+  "updatedAt": "2026-05-03T11:08:20.700Z",
+  "agents": [
+    {
+      "id": "agent_rmqee03a",
+      "name": "agent-reading",
+      "role": "assistant",
+      "status": "idle",
+      "createdAt": "2026-05-03T11:08:20.700Z",
+      "model": "unknown",
+      "systemPrompt": ""
+    }
+  ],
+  "summary": {
+    "id": "summary_u6ofh564",
+    "title": "读书日检",
+    "createdAt": "2026-05-03T11:08:20.700Z",
+    "file": "summary_u6ofh564.md"
+  },
+  "lastMessageCount": 45
+}

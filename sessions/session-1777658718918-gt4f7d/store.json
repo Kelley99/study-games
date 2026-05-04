@@ -1,0 +1,25 @@
+{
+  "id": "session-1777658718918-gt4f7d",
+  "name": "任务经验入库",
+  "status": "active",
+  "createdAt": "2026-05-04T05:54:44.252Z",
+  "updatedAt": "2026-05-04T05:55:38.282Z",
+  "agents": [
+    {
+      "id": "agent_czugwbce",
+      "name": "agent-reading",
+      "role": "assistant",
+      "status": "idle",
+      "createdAt": "2026-05-04T05:54:44.252Z",
+      "model": "unknown",
+      "systemPrompt": ""
+    }
+  ],
+  "summary": {
+    "id": "summary_79wuhl2g",
+    "title": "任务经验入库",
+    "createdAt": "2026-05-04T05:54:44.252Z",
+    "file": "summary_79wuhl2g.md"
+  },
+  "lastMessageCount": 37
+}

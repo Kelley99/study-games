@@ -3366,14 +3366,7 @@ function loadS(){try{var s=JSON.parse(localStorage.getItem("historyAdv2"));retur
 function saveS(){localStorage.setItem("historyAdv2",JSON.stringify(S))}
 
 function isChapter2Unlocked(){
-  if(S.c2unlocked) return true;
-  // 检查隋唐4关是否都至少1星
-  var ch1 = CHS[0];
-  for(var i=0;i<ch1.stages.length;i++){
-    if(!S.stars[ch1.stages[i].name] || S.stars[ch1.stages[i].name] < 1) return false;
-  }
-  S.c2unlocked = true;
-  saveS();
+  // 已取消锁定，所有章节均可直接访问
   return true;
 }
 
@@ -3394,32 +3387,25 @@ function renderHome(){
   var html='';
   for(var i=0;i<CHS.length;i++){
     var ch=CHS[i];
-    var locked = (i===1 && !isChapter2Unlocked());
-    var allDone = !locked && ch.stages.every(function(s){return S.stars[s.name]&&S.stars[s.name]>=1});
+    var locked = false; // 已取消锁定
+    var allDone = ch.stages.every(function(s){return S.stars[s.name]&&S.stars[s.name]>=1});
     var cls='chapter';
-    if(locked) cls+=' locked';
-    else if(allDone) cls+=' done';
+    if(allDone) cls+=' done';
     else cls+=' current';
     
     var tag='';
-    if(locked) tag='<span class="chapter-tag tag-locked">锁定</span>';
-    else if(allDone) tag='<span class="chapter-tag tag-done">已完成</span>';
+    if(allDone) tag='<span class="chapter-tag tag-done">已完成</span>';
     else tag='<span class="chapter-tag tag-current">当前</span>';
     
     var stars='';
-    if(!locked){
-      for(var j=0;j<ch.stages.length;j++){
-        var st=S.stars[ch.stages[j].name]||0;
-        stars+='<span title="'+ch.stages[j].name+'">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span> ';
-      }
+    for(var j=0;j<ch.stages.length;j++){
+      var st=S.stars[ch.stages[j].name]||0;
+      stars+='<span title="'+ch.stages[j].name+'">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span> ';
     }
     
     html+='<div class="'+cls+'" onclick="selectChapter('+i+')">';
     html+='<div class="chapter-title">'+ch.name+'</div>';
     html+='<div class="chapter-desc">'+ch.stages.length+' 个关卡 '+stars+'</div>';
-    if(locked){
-      html+='<div class="unlock-hint">完成隋唐全部关卡后解锁</div>';
-    }
     html+=tag;
     html+='</div>';
   }
@@ -3427,7 +3413,6 @@ function renderHome(){
 }
 
 function selectChapter(idx){
-  if(idx===1 && !isChapter2Unlocked()) return;
   currentChapter=CHS[idx];
   currentChapterIdx=idx;
   document.getElementById('chapterTitle').textContent=currentChapter.name;
