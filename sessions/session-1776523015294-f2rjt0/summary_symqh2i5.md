@@ -1,21 +1,17 @@
 ## 任务背景
-为灵超、代可行、文慧、大宏四个agent添加永久记忆命令：完成完整工作流程后生成技能文件。
+历史闯关游戏第二阶段任务（来自IMA订阅的「初中历史」知识库），用户确认当前可以先不做。
 
 ## 执行过程
-1. 读取四个agent的AGENTS.md文件路径
-2. 编写Workflow-to-Skill规则（非平凡、可复用工作流程捕获标准）
-3. 逐个更新：灵超→代可行→文慧→大宏的AGENTS.md
-4. 创建任务文档task-summary_workflow-to-skill_20260504.md
-5. 更新memory/2026-05-04.md记录工作内容
+1. 调出历史第二阶段任务记录：材料分析题（已11题）、难度分级L1-L4、徽章系统
+2. 询问用户确认具体改进方向
+3. 用户澄清任务来源：上次读取IMA订阅知识库后整理的改善计划
+4. 用户决定：暂不实施，等女儿测试第一阶段有更多反馈后再调整
 
 ## 关键结果
-- **更新文件**：4个AGENTS.md全部更新
-  - /Users/kelley/.qclaw/workspace/AGENTS.md（灵超）
-  - /Users/kelley/.qclaw/workspace-agent-29b6e205/AGENTS.md（代可行）
-  - /Users/kelley/.qclaw/workspace-agent-reading/AGENTS.md（文慧）
-  - /Users/kelley/.qclaw/workspace-agent-finance/AGENTS.md（大宏）
-- **规则要点**：捕获步骤/决策/工具/边缘情况/示例，存储skills/目录
-- **Artifact**：task-summary_workflow-to-skill_20260504.md
+- **Phase 2来源**：IMA订阅「初中历史」知识库 → 我读取后整理的改善计划
+- **当前策略**：暂停，等女儿测试反馈后再议
+- **架构顾虑**：担心当前架构太简单，承载不了复杂设计（难度分级、徽章系统）
+- **当前状态**：13关卡约235题，第一阶段已完成
 
 ## 结论建议
-工作流程知识不再随会话结束丢失。简单一次性任务无需捕获，多步骤可复用流程必须生成技能。建议各agent在完成复杂任务后主动识别并创建技能文件。
+第二阶段暂缓执行。等待女儿对第一阶段的测试反馈后再评估架构扩展性和改善方向。

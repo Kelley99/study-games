@@ -1,9 +1,9 @@
 {
   "id": "session-1776523015294-f2rjt0",
-  "name": "永久规则已添加",
+  "name": "历史第二阶段暂停",
   "status": "active",
   "createdAt": "2026-05-03T05:26:08.737Z",
-  "updatedAt": "2026-05-04T06:38:01.921Z",
+  "updatedAt": "2026-05-04T10:54:17.119Z",
   "agents": [
     {
       "id": "agent_fwmyls0t",
@@ -17,9 +17,9 @@
   ],
   "summary": {
     "id": "summary_symqh2i5",
-    "title": "永久规则已添加",
+    "title": "历史第二阶段暂停",
     "createdAt": "2026-05-03T05:26:08.737Z",
     "file": "summary_symqh2i5.md"
   },
-  "lastMessageCount": 38
+  "lastMessageCount": 43
 }

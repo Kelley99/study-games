@@ -1,9 +1,9 @@
 {
   "id": "session-1776514118280-exg8r1",
-  "name": "OCR功能完成",
+  "name": "三字段OCR取值错误排查",
   "status": "active",
   "createdAt": "2026-05-03T10:54:04.374Z",
-  "updatedAt": "2026-05-04T06:14:45.588Z",
+  "updatedAt": "2026-05-05T05:44:50.182Z",
   "agents": [
     {
       "id": "agent_i8vohucm",
@@ -17,9 +17,9 @@
   ],
   "summary": {
     "id": "summary_v354ofj0",
-    "title": "OCR功能完成",
+    "title": "三字段OCR取值错误排查",
     "createdAt": "2026-05-03T10:54:04.375Z",
     "file": "summary_v354ofj0.md"
   },
-  "lastMessageCount": 43
+  "lastMessageCount": 37
 }
