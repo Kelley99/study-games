@@ -239,3 +239,27 @@ This is a permanent memory command. After completing any non-trivial, reusable w
 - Integration setups
 
 **Not every task needs a skill** — use judgment. Simple one-off tasks don't need capture. Reusable, multi-step workflows do.
+
+---
+
+## 🚫 避免分析瘫痪 (Avoid Analysis Paralysis)
+
+**问题**: 陷入"分析→确认→再分析"的循环，反复验证现状而不执行修改。
+
+**表现**:
+- 用户问进展如何 → 回复"正在分析"但没有实际进展
+- 反复检查文件状态但不修改
+- 花大量时间理解问题但不动手解决
+
+**解决方法**:
+1. **理解问题后直接执行**: 分析清楚后立即编写修改代码并执行
+2. **一次完整修改**: 不要分多次验证再修改，一次性完成
+3. **先做后验证**: 先执行修改，再验证结果
+4. **小任务不超3轮**: 单次修改任务最多分析-执行-验证3轮
+
+**原则**: "动手 > 分析" — 理解问题后立即行动，完成后再检查结果。
+
+**时间限制**:
+- 单次修改任务不超过 30 分钟
+- 超过 30 分钟无实质进展 → 报告当前状态+问题+请求指引
+- 不要让用户主动追问进度

@@ -1,9 +1,9 @@
 {
   "id": "session-1777897176292-m8siwy",
-  "name": "停掉历史闯关服务器",
+  "name": "生物闯关彩蛋升级",
   "status": "active",
   "createdAt": "2026-05-04T12:30:29.683Z",
-  "updatedAt": "2026-05-04T12:30:29.683Z",
+  "updatedAt": "2026-05-05T08:14:55.255Z",
   "agents": [
     {
       "id": "agent_y5jcruh8",
@@ -17,9 +17,9 @@
   ],
   "summary": {
     "id": "summary_60lsp8lt",
-    "title": "停掉历史闯关服务器",
+    "title": "生物闯关彩蛋升级",
     "createdAt": "2026-05-04T12:30:29.683Z",
     "file": "summary_60lsp8lt.md"
   },
-  "lastMessageCount": 31
+  "lastMessageCount": 48
 }

@@ -1,9 +1,9 @@
 {
   "id": "session-1776514118280-exg8r1",
-  "name": "三字段OCR取值错误排查",
+  "name": "导出Excel索引越界修复",
   "status": "active",
   "createdAt": "2026-05-03T10:54:04.374Z",
-  "updatedAt": "2026-05-05T05:44:50.182Z",
+  "updatedAt": "2026-05-05T09:18:25.925Z",
   "agents": [
     {
       "id": "agent_i8vohucm",
@@ -17,9 +17,9 @@
   ],
   "summary": {
     "id": "summary_v354ofj0",
-    "title": "三字段OCR取值错误排查",
+    "title": "导出Excel索引越界修复",
     "createdAt": "2026-05-03T10:54:04.375Z",
     "file": "summary_v354ofj0.md"
   },
-  "lastMessageCount": 37
+  "lastMessageCount": 47
 }
